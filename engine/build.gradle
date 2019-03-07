@@ -1,0 +1,28 @@
+apply plugin: 'com.android.library'
+apply from: "../config.gradle"
+
+def cnf = ext.android
+def egn = ext.engine
+
+android {
+    compileSdkVersion cnf.compileSdkVersion
+
+    defaultConfig {
+        versionCode egn.versionCode
+        versionName egn.versionName
+
+        minSdkVersion cnf.minSdkVersion
+        targetSdkVersion cnf.targetSdkVersion
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+
+}

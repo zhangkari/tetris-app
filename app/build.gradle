@@ -1,0 +1,30 @@
+apply plugin: 'com.android.application'
+apply from: "../config.gradle"
+
+def cnf = ext.android
+def app = ext.app
+
+android {
+    compileSdkVersion cnf.compileSdkVersion
+    buildToolsVersion cnf.buildToolsVersion
+
+    defaultConfig {
+        applicationId app.id
+        versionCode app.versionCode
+        versionName app.versionName
+
+        minSdkVersion cnf.minSdkVersion
+        targetSdkVersion cnf.targetSdkVersion
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles 'proguard.cfg'
+        }
+    }
+}
+
+dependencies {
+    implementation project(path: ':engine')
+}

@@ -1,0 +1,19 @@
+ext {
+    app = [
+            versionCode: 10000,
+            versionName: '0.0.1',
+            id         : 'game.tetris'
+    ]
+    engine = [
+            versionCode: 10000,
+            versionName: '0.0.1'
+    ]
+    android = [
+            compileSdkVersion: 28,
+            minSdkVersion    : 19,
+            targetSdkVersion : 28,
+            buildToolsVersion: '28.0.2'
+    ]
+
+    dependency = []
+}
