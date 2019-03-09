@@ -8,8 +8,8 @@ import android.graphics.Paint.Style;
 import android.graphics.drawable.BitmapDrawable;
 
 import game.engine.layer.KSprite;
-import game.tetris.utils.StorageUtil;
-import game.tetris.utils.ColorUtil;
+import game.tetris.utils.Storages;
+import game.tetris.utils.Colors;
 
 public class CubeSprite extends KSprite {
 
@@ -39,7 +39,7 @@ public class CubeSprite extends KSprite {
     public CubeSprite(Context context, int x, int y, int nShapeIndex) {
         super(context);
 
-        ColorUtil.setColor(paint, nColor);
+        Colors.setColor(paint, nColor);
         paint.setStyle(Style.FILL);
 
         this.x = x;
@@ -47,7 +47,7 @@ public class CubeSprite extends KSprite {
         this.nShapeIndex = nShapeIndex;
         mBitmap = ((BitmapDrawable) (context.getResources().getDrawable(com.minmin.kari.tetris.R.drawable.red_heart))).getBitmap();
 
-        mHeartOn = StorageUtil.getInstance(context).isHeartOn();
+        mHeartOn = Storages.getInstance(context).isHeartOn();
 
         initData();
     }
@@ -101,7 +101,7 @@ public class CubeSprite extends KSprite {
 
     public CubeSprite setColor(int color) {
         this.nColor = color;
-        ColorUtil.setColor(paint, color);
+        Colors.setColor(paint, color);
         return this;
     }
 

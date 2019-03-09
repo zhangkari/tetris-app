@@ -1,91 +1,99 @@
 package game.tetris.ui;
 
+import android.content.Context;
+import android.view.ViewGroup;
+
 import game.engine.layer.KView;
 import game.tetris.TetrisActivity;
-
-import android.content.Context;
+import game.tetris.utils.Views;
 
 public class GameControl {
 
-    public static KView m_KView = null;
-    private int m_status;
+    private ViewGroup mContainer;
+    private KView mView;
+    private int mStatus;
     private Context context;
 
-    private KScreen preGameScreen = null;
+    private MainScreen preGameScreen = null;
 
     public GameControl(Context context) {
-        m_KView = null;
-        m_status = GameDefine.Game_Menu;
+        mView = null;
+        mStatus = GameDefine.Game_Menu;
         this.context = context;
+        controlView(mStatus);
+    }
+
+    public void setContainer(ViewGroup parent) {
+        mContainer = parent;
     }
 
     public void setStatus(int status) {
-        this.m_status = status;
+        this.mStatus = status;
     }
 
-    public void freeGameView(KView gview) {
-        if (gview != null) {
-            gview = null;
+    public void freeGameView(KView view) {
+        if (view != null) {
+            view.reCycle();
         }
     }
 
     public void controlView(int status) {
-        if (status != m_status) {
-            if (m_KView != null) {
-                m_KView.reCycle();
+        if (status != mStatus) {
+            if (mView != null) {
+                mView.reCycle();
                 System.gc();
             }
         }
 
-        freeGameView(m_KView);
+        freeGameView(mView);
 
         switch (status) {
             case GameDefine.Game_Menu:
                 if (preGameScreen != null) {
                     preGameScreen.onPauseGame();
                 }
-                m_KView = new MenuScreen(context);
+                mView = new MenuScreen(context);
                 break;
             case GameDefine.Game_New:
                 if (preGameScreen != null) {
                     preGameScreen = null;
                     System.gc();
                 }
-                preGameScreen = new KScreen(context);
-                m_KView = preGameScreen;
+                preGameScreen = new MainScreen(context);
+                mView = preGameScreen;
                 break;
             case GameDefine.Game_Continue:
                 if (preGameScreen != null) {
                     preGameScreen.onContinueGame();
-                    m_KView = preGameScreen;
+                    mView = preGameScreen;
                 }
                 break;
             case GameDefine.Game_Setting:
-                m_KView = new SettingScreen(context);
+                mView = new SettingScreen(context);
                 break;
             case GameDefine.Game_Record:
-                m_KView = new RecordScreen(context);
+                mView = new RecordScreen(context);
                 break;
             case GameDefine.Game_Help:
-                m_KView = new HelpScreen(context);
+                mView = new HelpScreen(context);
                 break;
             case GameDefine.Game_Over:
-                m_KView = new KOverScreen(context, m_KView);
+                mView = new OverScreen(context, mView);
                 break;
             case GameDefine.Game_About:
-                m_KView = new AboutScreen(context);
+                mView = new AboutScreen(context);
                 break;
             case GameDefine.Game_Exit:
                 TetrisActivity activity = (TetrisActivity) context;
                 activity.finish();
+                return;
         }
-
         setStatus(status);
+
+        Views.relayout(mContainer, mView);
     }
 
-    public static KView getMainView() {
-        return m_KView;
+    public KView getMainView() {
+        return mView;
     }
-
-
 }

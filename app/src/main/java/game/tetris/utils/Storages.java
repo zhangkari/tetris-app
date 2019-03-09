@@ -4,20 +4,20 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
-public class StorageUtil {
+public class Storages {
 
     private String fileName = "Tetris_Setting";
     private Context context;
 
-    private static StorageUtil mgr = null;
+    private static Storages mgr = null;
 
-    public StorageUtil(Context context) {
+    public Storages(Context context) {
         this.context = context;
     }
 
-    public static StorageUtil getInstance(Context context) {
+    public static Storages getInstance(Context context) {
         if (mgr == null) {
-            mgr = new StorageUtil(context);
+            mgr = new Storages(context);
         }
         return mgr;
     }

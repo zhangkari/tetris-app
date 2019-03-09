@@ -2,7 +2,6 @@ package game.engine.layer;
 
 import android.content.Context;
 
-
 public abstract class KSprite extends KDrawable {
 
     public final static int CUBE_SIZE = 30;
@@ -24,6 +23,5 @@ public abstract class KSprite extends KDrawable {
         this.x += x;
         this.y += y;
     }
-
 }
 

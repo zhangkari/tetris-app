@@ -4,14 +4,15 @@ import game.engine.layer.KView;
 import game.engine.layer.KBitmap;
 import game.engine.layer.KString;
 import game.tetris.TetrisActivity;
+import game.tetris.utils.Strings;
 
 import android.content.Context;
 import android.view.MotionEvent;
 
-public class AboutScreen extends KView {
+import com.minmin.kari.tetris.R;
 
-    private GameControl mGameControl = null;
-
+public class AboutScreen extends FullScreen {
+    private GameControl mGameControl;
     private KString kstrOK;
 
     public AboutScreen(Context context) {
@@ -22,13 +23,11 @@ public class AboutScreen extends KView {
         int Text_Space = 30;
 
 
-        addDrawableObject(new KString(context, 80, yTop, "Tetris"));
-        addDrawableObject(new KString(context, 10, yTop + 4 * Text_Space, "contact zhangkari.mail@gmail.com"));
+        addDrawableObject(new KString(context, 80, yTop, Strings.get(R.string.app_name)));
 
-        kstrOK = new KString(context, xLeft, yTop + 5 * Text_Space, "OK").setTextSize(20);
+        kstrOK = new KString(context, xLeft, yTop + 5 * Text_Space, Strings.get(R.string.ok)).setTextSize(20);
         addDrawableObject(kstrOK);
 
-        //��ȡGameControl
         TetrisActivity activity = (TetrisActivity) context;
         mGameControl = activity.mGameControl;
 

@@ -3,19 +3,22 @@ package game.tetris.ui;
 import game.engine.layer.KView;
 import game.engine.layer.KBitmap;
 import game.engine.layer.KString;
-import game.tetris.utils.StorageUtil;
+import game.tetris.utils.Storages;
 import game.engine.utils.SoundManager;
 import game.tetris.TetrisActivity;
+import game.tetris.utils.Strings;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.view.MotionEvent;
 
-public class SettingScreen extends KView {
+import com.minmin.kari.tetris.R;
+
+public class SettingScreen extends FullScreen {
 
     private GameControl mGameControl = null;
 
-    private StorageUtil userDataMgr;
+    private Storages userDataMgr;
 
     private KString kstrMusicOn;
     private KString kstrMusicOff;
@@ -31,19 +34,19 @@ public class SettingScreen extends KView {
 
         addDrawableObject(new KBitmap(context, 120, 100, 160, 160).setId(com.minmin.kari.tetris.R.drawable.logo_72x72));
 
-        userDataMgr = StorageUtil.getInstance(context);
+        userDataMgr = Storages.getInstance(context);
 
         int xLeft = 120;
         int yTop = 300;
         int Text_Space = 80;
 
-        KString kstrMusicMode = new KString(context, xLeft, yTop, "��������").setTextSize(40);
+        KString kstrMusicMode = new KString(context, xLeft, yTop, Strings.get(R.string.music)).setTextSize(40);
         addDrawableObject(kstrMusicMode);
 
-        kstrMusicOn = new KString(context, xLeft, yTop + Text_Space, "��").setTextSize(30);
+        kstrMusicOn = new KString(context, xLeft, yTop + Text_Space, Strings.get(R.string.on)).setTextSize(30);
         addDrawableObject(kstrMusicOn);
 
-        kstrMusicOff = new KString(context, xLeft + Text_Space, yTop + Text_Space, "��").setTextSize(30);
+        kstrMusicOff = new KString(context, xLeft + Text_Space, yTop + Text_Space, Strings.get(R.string.off)).setTextSize(30);
         addDrawableObject(kstrMusicOff);
 
         if (userDataMgr.isPlayMusic()) {
@@ -55,13 +58,13 @@ public class SettingScreen extends KView {
         }
 
 
-        KString kstrGameMode = new KString(context, xLeft, yTop + 2 * Text_Space, "��Ϸģʽ").setTextSize(40);
+        KString kstrGameMode = new KString(context, xLeft, yTop + 2 * Text_Space, Strings.get(R.string.style)).setTextSize(40);
         addDrawableObject(kstrGameMode);
 
-        kstrHeartMode = new KString(context, xLeft, yTop + 3 * Text_Space, "������ӡ").setTextSize(30);
+        kstrHeartMode = new KString(context, xLeft, yTop + 3 * Text_Space, Strings.get(R.string.heart)).setTextSize(30);
         addDrawableObject(kstrHeartMode);
 
-        kstrRectMode = new KString(context, xLeft + 140, yTop + 3 * Text_Space, "��׼ģʽ").setTextSize(30);
+        kstrRectMode = new KString(context, xLeft + 140, yTop + 3 * Text_Space, Strings.get(R.string.square)).setTextSize(30);
         addDrawableObject(kstrRectMode);
 
         if (userDataMgr.isHeartOn()) {
@@ -72,7 +75,7 @@ public class SettingScreen extends KView {
             kstrHeartMode.setColor(Color.GRAY);
         }
 
-        kstrOK = new KString(context, xLeft, yTop + 4 * Text_Space, "ȷ��").setTextSize(40);
+        kstrOK = new KString(context, xLeft, yTop + 4 * Text_Space, Strings.get(R.string.ok)).setTextSize(40);
         addDrawableObject(kstrOK);
 
     }

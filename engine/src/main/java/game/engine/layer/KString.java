@@ -22,10 +22,9 @@ public class KString extends KDrawable {
 
         this.text = text;
 
-        /* ���û�������*/
         color = Color.BLUE;
         paint.setTextAlign(Align.LEFT);
-        paint.setStyle(Style.STROKE);
+        paint.setStyle(Style.FILL);
 
         setColor(color);
         setTextSize(15);
@@ -40,9 +39,7 @@ public class KString extends KDrawable {
     public KString setTextSize(float size) {
         paint.setTextSize(size);
 
-        //��ȡ���������Ϣ
         FontMetrics fm = paint.getFontMetrics();
-        /*����߶�*/
         fontHeight = (int) (fm.ascent - fm.descent) + 4;
 
         Rect rect = new Rect();
@@ -74,12 +71,9 @@ public class KString extends KDrawable {
 
     @Override
     public void Draw(Canvas canvas) {
-
         canvas.drawText(text, x, y - fontHeight, paint);
-
-        /*���������ַ����ľ���*/
-        if (isDrawBorder)
+        if (isDrawBorder) {
             canvas.drawRect(x, y, x + width, y + height, paint);
+        }
     }
-
 }

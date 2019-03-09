@@ -4,11 +4,13 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint.Style;
 
+import com.minmin.kari.tetris.R;
+
 import game.engine.layer.KDrawable;
 import game.engine.layer.KString;
+import game.tetris.utils.Strings;
 
 public class OperationPanel extends KDrawable {
-
 
     private KString stringStart;
     private KString stringPause;
@@ -20,12 +22,10 @@ public class OperationPanel extends KDrawable {
         paint.setARGB(255, 255, 0, 0);
         paint.setStyle(Style.STROKE);
 
-        stringStart = new KString(context, this.x, this.y, "��ʼ").setTextSize(30);
-        stringPause = new KString(context, this.x, this.y + 100, "��ͣ").setTextSize(30);
-        stringMenu = new KString(context, this.x, this.y + 200, "�˵�").setTextSize(30);
-
+        stringStart = new KString(context, this.x, this.y, Strings.get(R.string.start)).setTextSize(30);
+        stringPause = new KString(context, this.x, this.y + 100, Strings.get(R.string.pause)).setTextSize(30);
+        stringMenu = new KString(context, this.x, this.y + 200, Strings.get(R.string.menu)).setTextSize(30);
     }
-
 
     @Override
     public void Draw(Canvas canvas) {

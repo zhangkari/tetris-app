@@ -60,7 +60,6 @@ public class GameStick extends KDrawable {
 
     @Override
     public void Draw(Canvas canvas) {
-        // TODO Auto-generated method stub
         rectLeft.Draw(canvas);
         rectRight.Draw(canvas);
         rectUp.Draw(canvas);

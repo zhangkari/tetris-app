@@ -2,7 +2,7 @@ package game.tetris.utils;
 
 import android.graphics.Paint;
 
-public class ColorUtil {
+public class Colors {
 
     public static int nColors = 6;
 

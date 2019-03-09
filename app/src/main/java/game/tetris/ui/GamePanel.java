@@ -1,8 +1,8 @@
 package game.tetris.ui;
 
 import game.engine.layer.KDrawable;
-import game.tetris.utils.StorageUtil;
-import game.tetris.utils.ColorUtil;
+import game.tetris.utils.Storages;
+import game.tetris.utils.Colors;
 import game.engine.utils.SoundManager;
 
 import android.content.Context;
@@ -41,8 +41,8 @@ public class GamePanel extends KDrawable implements Runnable {
             }
         }
 
-        mHeartOn = StorageUtil.getInstance(context).isHeartOn();
-        mMusicOn = StorageUtil.getInstance(context).isPlayMusic();
+        mHeartOn = Storages.getInstance(context).isHeartOn();
+        mMusicOn = Storages.getInstance(context).isPlayMusic();
 
         Thread t = new Thread(this);
         t.start();
@@ -70,7 +70,7 @@ public class GamePanel extends KDrawable implements Runnable {
                     if (mHeartOn) {
                         canvas.drawBitmap(mBitmap, null, new Rect(j + 2, i + 2, j + tileSize - 2, i + tileSize - 2), paint);
                     } else {
-                        ColorUtil.setColor(paint, color);
+                        Colors.setColor(paint, color);
                         paint.setStyle(Style.FILL);
                         canvas.drawRect(j + 1, i + 1, j - 1 + tileSize, i - 1 + tileSize, paint);
                     }

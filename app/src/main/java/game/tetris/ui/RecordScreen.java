@@ -3,13 +3,16 @@ package game.tetris.ui;
 import game.engine.layer.KView;
 import game.engine.layer.KBitmap;
 import game.engine.layer.KString;
-import game.tetris.utils.StorageUtil;
+import game.tetris.utils.Storages;
 import game.tetris.TetrisActivity;
+import game.tetris.utils.Strings;
 
 import android.content.Context;
 import android.view.MotionEvent;
 
-public class RecordScreen extends KView {
+import com.minmin.kari.tetris.R;
+
+public class RecordScreen extends FullScreen {
 
     private GameControl mGameControl;
 
@@ -23,10 +26,10 @@ public class RecordScreen extends KView {
         int Text_Space = 30;
 
 
-        addDrawableObject(new KString(context, 80, yTop, "Score"));
-        addDrawableObject(new KString(context, 180, yTop + 2 * Text_Space, StorageUtil.getInstance(context).getHeightScore() + ""));
+        addDrawableObject(new KString(context, 80, yTop, Strings.get(R.string.score)));
+        addDrawableObject(new KString(context, 180, yTop + 2 * Text_Space, Storages.getInstance(context).getHeightScore() + ""));
 
-        kstrOK = new KString(context, xLeft, yTop + 3 * Text_Space, "OK").setTextSize(20);
+        kstrOK = new KString(context, xLeft, yTop + 3 * Text_Space, Strings.get(R.string.ok)).setTextSize(20);
         addDrawableObject(kstrOK);
 
         TetrisActivity activity = (TetrisActivity) context;

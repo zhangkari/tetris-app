@@ -4,23 +4,26 @@ import game.engine.layer.KView;
 import game.engine.layer.KBitmap;
 import game.engine.layer.KString;
 import game.tetris.TetrisActivity;
+import game.tetris.utils.Strings;
 
 import android.content.Context;
 import android.view.MotionEvent;
 
-public class MenuScreen extends KView {
+import com.minmin.kari.tetris.R;
+
+public class MenuScreen extends FullScreen {
 
     private GameControl mGameControl;
 
     private String[] textOptions = new String[]
             {
-                    "New",
-                    "Continue",
-                    "Rank",
-                    "Setting",
-                    "Help",
-                    "About",
-                    "Exit",
+                    Strings.get(R.string.new_game),
+                    Strings.get(R.string.continue_game),
+                    Strings.get(R.string.rank),
+                    Strings.get(R.string.setting),
+                    Strings.get(R.string.help),
+                    Strings.get(R.string.about),
+                    Strings.get(R.string.exit),
             };
 
     private KString[] KStringOptions = new KString[textOptions.length];

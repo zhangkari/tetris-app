@@ -1,18 +1,18 @@
 package game.tetris.ui;
 
-import game.engine.layer.KView;
-import game.engine.layer.KSprite;
-import game.tetris.utils.StorageUtil;
-import game.tetris.utils.ColorUtil;
-import game.tetris.physics.Collision;
-import game.engine.utils.SoundManager;
-import com.minmin.kari.tetris.R;
-import game.tetris.TetrisActivity;
-
 import android.content.Context;
 import android.view.MotionEvent;
 
-public class KScreen extends KView implements Runnable {
+import com.minmin.kari.tetris.R;
+
+import game.engine.layer.KSprite;
+import game.engine.utils.SoundManager;
+import game.tetris.TetrisActivity;
+import game.tetris.physics.Collision;
+import game.tetris.utils.Colors;
+import game.tetris.utils.Storages;
+
+public class MainScreen extends FullScreen implements Runnable {
 
     private CubeSprite sprite;
     private int nextSpriteIndex = 0;
@@ -41,14 +41,14 @@ public class KScreen extends KView implements Runnable {
 
     private Thread t;
 
-    public KScreen(Context context) {
+    public MainScreen(Context context) {
         super(context);
 
         sprite = new CubeSprite(context);
         addDrawableObject(sprite);
 
         nextSpriteIndex = ((int) (Math.random() * 10)) % CubeSprite.nShapes;
-        nextSpriteColor = ((int) (Math.random() * 10)) % ColorUtil.nColors + 1;
+        nextSpriteColor = ((int) (Math.random() * 10)) % Colors.nColors + 1;
 
         nextSprite = new CubeSprite(context, 360, 60, nextSpriteIndex).setColor(nextSpriteColor);
         addDrawableObject(nextSprite);
@@ -69,7 +69,7 @@ public class KScreen extends KView implements Runnable {
         gameStick = new GameStick(context, 90, 540, 240, 240);
         addDrawableObject(gameStick);
 
-        mMusicOn = StorageUtil.getInstance(context).isPlayMusic();
+        mMusicOn = Storages.getInstance(context).isPlayMusic();
 
         t = new Thread(this);
         t.start();
@@ -200,7 +200,7 @@ public class KScreen extends KView implements Runnable {
                 collisionSprite.copyFrom(sprite);
 
                 nextSpriteIndex = ((int) (Math.random() * 10)) % CubeSprite.nShapes;
-                nextSpriteColor = ((int) (Math.random() * 10)) % ColorUtil.nColors + 1;
+                nextSpriteColor = ((int) (Math.random() * 10)) % Colors.nColors + 1;
                 nextSprite.setShape(nextSpriteIndex).setColor(nextSpriteColor);
 
                 scorePanel.setScore(gamePanel.getnScore());
@@ -309,7 +309,7 @@ public class KScreen extends KView implements Runnable {
 
         gamePanel.free();
 
-        StorageUtil.getInstance(context).saveHeighScore(gamePanel.getnScore());
+        Storages.getInstance(context).saveHeighScore(gamePanel.getnScore());
 
         isOver = true;
 

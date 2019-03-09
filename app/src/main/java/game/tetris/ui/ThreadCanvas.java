@@ -2,52 +2,73 @@ package game.tetris.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 
-public class ThreadCanvas extends View implements Runnable {
+import game.engine.layer.KView;
+import game.tetris.utils.Views;
+
+public class ThreadCanvas extends FrameLayout implements Runnable {
+
+    private boolean mExitFlag;
+    private Thread mThread;
+    private GameControl mGameControl;
 
     public ThreadCanvas(Context context) {
         super(context);
-
+        setWillNotDraw(false);
     }
 
-    protected void onDraw(Canvas canvas) {
-        if (GameControl.getMainView() != null) {
-            GameControl.getMainView().onDraw(canvas);
-        } else {
-            Log.e("ThreadCanvas", "mGameView:null");
+    public void setGameControl(GameControl control) {
+        mGameControl = control;
+    }
+
+    @Override
+    public void onDraw(Canvas canvas) {
+        KView view = mGameControl.getMainView();
+        if (view == null) {
+            return;
         }
+        Views.relayout(this, view);
     }
 
     public void start() {
-        Thread t = new Thread(this);
-        t.start();
+        mThread = new Thread(this);
+        mThread.start();
+    }
+
+    public void stop() {
+        mExitFlag = true;
+        mThread.interrupt();
     }
 
     public void refresh() {
-        if (GameControl.getMainView() != null) {
-            GameControl.getMainView().refresh();
+        KView view = mGameControl.getMainView();
+        if (view != null) {
+            view.refresh();
         }
     }
 
+    @Override
     public void run() {
-        while (true) {
+        while (!mExitFlag) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
             refresh();
-
             postInvalidate();
         }
     }
 
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return GameControl.getMainView().onTouchEvent(event);
+        KView view = mGameControl.getMainView();
+        if (view != null) {
+            return view.onTouchEvent(event);
+        }
+        return false;
     }
-
 }

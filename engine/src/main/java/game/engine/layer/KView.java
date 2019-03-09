@@ -31,11 +31,11 @@ public abstract class KView extends View {
         addDrawableObject(object);
     }
 
+    @Override
     public void onDraw(Canvas canvas) {
         for (int i = 0; i < drawList.size(); ++i) {
             drawList.get(i).Draw(canvas);
         }
-
     }
 
     public abstract boolean onTouchEvent(MotionEvent event);
