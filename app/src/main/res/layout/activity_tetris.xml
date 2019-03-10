@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <game.tetris.view.SpriteView
+            android:id="@+id/spriteView"
+            android:layout_width="200dp"
+            android:layout_height="300dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Score" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <ImageView
+            android:id="@+id/top"
+            style="@style/btn_direction.top" />
+
+        <TextView
+            android:id="@+id/reset"
+            style="@style/btn_setting"
+            android:text="Reset" />
+
+        <TextView
+            android:id="@+id/music"
+            style="@style/btn_setting"
+            android:text="Music" />
+
+        <TextView
+            android:id="@+id/level"
+            style="@style/btn_setting"
+            android:text="Level" />
+
+        <TextView
+            android:id="@+id/pause"
+            style="@style/btn_setting"
+            android:text="Pause" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/left"
+            style="@style/btn_direction.left" />
+
+        <ImageView
+            android:id="@+id/right"
+            style="@style/btn_direction.right" />
+
+        <ImageView
+            android:id="@+id/transform"
+            style="@style/btn_transform" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/down"
+        style="@style/btn_direction.bottom" />
+</LinearLayout>

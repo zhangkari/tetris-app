@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="btn_setting">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:drawableTop">@drawable/btn_yellow</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+    </style>
+
+    <style name="btn_direction">
+        <item name="android:layout_width">@dimen/btn_direction</item>
+        <item name="android:layout_height">@dimen/btn_direction</item>
+        <item name="android:background">@drawable/btn_yellow</item>
+
+    </style>
+
+    <style name="btn_transform">
+        <item name="android:layout_width">@dimen/btn_transform</item>
+        <item name="android:layout_height">@dimen/btn_transform</item>
+        <item name="android:background">@drawable/btn_blue</item>
+        <item name="android:layout_marginLeft">50dp</item>
+    </style>
+
+    <style name="btn_direction.left">
+        <item name="android:layout_marginLeft">20dp</item>
+    </style>
+
+    <style name="btn_direction.right">
+        <item name="android:layout_marginLeft">50dp</item>
+    </style>
+
+    <style name="btn_direction.top">
+        <item name="android:layout_marginLeft">50dp</item>
+    </style>
+
+    <style name="btn_direction.bottom">
+        <item name="android:layout_marginLeft">50dp</item>
+    </style>
+
+</resources>
