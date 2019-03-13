@@ -20,7 +20,7 @@ public class BitmapShape extends RectShape {
     }
 
     @Override
-    public KDrawable onCreateShapeItem() {
+    public KDrawable onCreateShapeItem(int row, int col) {
         return new KBitmap(mBitmap, mTileSize, mTileSize);
     }
 

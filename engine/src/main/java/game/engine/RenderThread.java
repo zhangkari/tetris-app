@@ -1,6 +1,10 @@
 package game.engine;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.view.SurfaceHolder;
 
 import java.util.ArrayList;
@@ -12,10 +16,18 @@ import game.engine.drawable.KDrawable;
 public class RenderThread extends Thread {
     private static final String TAG = "RenderThread";
 
-    private SurfaceHolder mHolder;
+    // indicate whether exit RenderThread
     private boolean mExitFlag;
+
+    private SurfaceHolder mHolder;
     private List<KDrawable> mDrawables;
+    private Paint mClearPaint;
+
+    // Refresh frequency
     private int mRefreshHZ = 10;
+
+    private int mMaxWidth;
+    private int mMaxHeight;
 
     public RenderThread(SurfaceHolder holder) {
         super(TAG);
@@ -27,6 +39,7 @@ public class RenderThread extends Thread {
         if (drawable != null && !mDrawables.contains(drawable)) {
             mDrawables.add(drawable);
         }
+        retrieveMaxSize();
     }
 
     public void setDrawables(Collection<KDrawable> drawables) {
@@ -34,6 +47,14 @@ public class RenderThread extends Thread {
         if (drawables != null) {
             mDrawables.addAll(drawables);
         }
+        retrieveMaxSize();
+    }
+
+    public boolean hasDrawable(KDrawable d) {
+        if (d == null) {
+            throw new NullPointerException("Argument must not be null !");
+        }
+        return mDrawables.contains(d);
     }
 
     public void setRefreshHZ(int hz) {
@@ -53,6 +74,7 @@ public class RenderThread extends Thread {
             mExitFlag = true;
             interrupt();
         }
+        onDestroy();
     }
 
     @Override
@@ -60,6 +82,7 @@ public class RenderThread extends Thread {
         final int interval = 1000 / mRefreshHZ;
         while (!mExitFlag) {
             Canvas canvas = mHolder.lockCanvas();
+            clearCanvas(canvas);
             onDraw(canvas);
             mHolder.unlockCanvasAndPost(canvas);
             try {
@@ -70,14 +93,43 @@ public class RenderThread extends Thread {
         }
     }
 
+    private void clearCanvas(Canvas canvas) {
+        canvas.drawRect(0, 0, mMaxWidth, mMaxHeight, mClearPaint);
+    }
+
     private void onDraw(Canvas canvas) {
         for (KDrawable d : mDrawables) {
             d.onDraw(canvas);
         }
     }
 
+    private void onDestroy() {
+        if (mDrawables.size() > 0) {
+            for (KDrawable d : mDrawables) {
+                d.onDestroy();
+            }
+            mDrawables.clear();
+        }
+    }
+
     private void init() {
         mExitFlag = true;
         mDrawables = new ArrayList<>(16);
+        mClearPaint = new Paint(Color.WHITE);
+        mClearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
+    }
+
+    private void retrieveMaxSize() {
+        if (mDrawables == null || mDrawables.size() < 1) {
+            return;
+        }
+        for (KDrawable d : mDrawables) {
+            if (d.getWidth() > mMaxWidth) {
+                mMaxWidth = d.getWidth();
+            }
+            if (d.getHeight() > mMaxHeight) {
+                mMaxHeight = d.getHeight();
+            }
+        }
     }
 }

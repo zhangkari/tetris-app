@@ -6,14 +6,14 @@ import android.graphics.Paint;
 
 import game.engine.drawable.KDrawable;
 
-public class BackgroundGrid extends KDrawable {
+public class GridLayer extends KDrawable {
     private static final int PADDING = 1;
     private static final int GRID_COLOR = Color.parseColor("#eebbaa");
     private static final int BORDER_COLOR = Color.parseColor("#dd4455");
 
     private int mInterval;
 
-    public BackgroundGrid(int width, int height) {
+    public GridLayer(int width, int height) {
         super(width, height);
     }
 

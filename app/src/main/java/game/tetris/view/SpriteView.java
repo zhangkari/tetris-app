@@ -4,12 +4,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import game.engine.RenderView;
-import game.tetris.Constants;
-import game.tetris.data.SceneData;
-import game.tetris.sprite.BackgroundGrid;
-import game.tetris.sprite.RectShape;
 
-public class SpriteView extends RenderView {
+public class SpriteView extends RenderView implements SpriteListener {
+    private SpriteListener mSpriteListener;
+
     public SpriteView(Context context) {
         this(context, null);
     }
@@ -24,6 +22,7 @@ public class SpriteView extends RenderView {
     }
 
     private void init() {
+        mSpriteListener = new SpriteHolder();
         post(new Runnable() {
             @Override
             public void run() {
@@ -33,17 +32,76 @@ public class SpriteView extends RenderView {
     }
 
     private void onSizeMeasured(int width, int height) {
-        BackgroundGrid grid = new BackgroundGrid(width, height);
-        grid.setInterval(width / Constants.SCENE_COLS);
-        addDrawable(grid);
+        onInitialized(this, width, height);
+    }
 
-        RectShape scene = new RectShape(width, height);
-        scene.setTileSize(width / Constants.SCENE_COLS);
-        scene.setShapeData(SceneData.getInstance().getShapeData());
-        addDrawable(scene);
+    @Override
+    public void onInitialized(RenderView view, int width, int height) {
+        if (mSpriteListener != null) {
+            mSpriteListener.onInitialized(this, width, height);
+        }
+    }
 
-        RectShape sprite = new RectShape(width / Constants.SCENE_COLS, height / Constants.SCENE_ROWS);
-        sprite.setTileSize(width / Constants.SCENE_COLS);
-        addDrawable(sprite);
+    @Override
+    public void onStart() {
+        if (mSpriteListener != null) {
+            mSpriteListener.onStart();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if (mSpriteListener != null) {
+            mSpriteListener.onPause();
+        }
+    }
+
+    @Override
+    public void onReset() {
+        if (mSpriteListener != null) {
+            mSpriteListener.onReset();
+        }
+    }
+
+    @Override
+    public void onAchieve(int row) {
+        if (mSpriteListener != null) {
+            mSpriteListener.onAchieve(row);
+        }
+    }
+
+    @Override
+    public void onQuit() {
+        if (mSpriteListener != null) {
+            mSpriteListener.onQuit();
+        }
+    }
+
+    @Override
+    public void onMoveLeft() {
+        if (mSpriteListener != null) {
+            mSpriteListener.onMoveLeft();
+        }
+    }
+
+    @Override
+    public void onMoveRight() {
+        if (mSpriteListener != null) {
+            mSpriteListener.onMoveRight();
+        }
+    }
+
+    @Override
+    public void onMoveDown() {
+        if (mSpriteListener != null) {
+            mSpriteListener.onMoveDown();
+        }
+    }
+
+    @Override
+    public void onTransform() {
+        if (mSpriteListener != null) {
+            mSpriteListener.onTransform();
+        }
     }
 }

@@ -33,6 +33,16 @@ public class RenderView extends SurfaceView implements SurfaceHolder.Callback {
         mThread.setDrawables(drawables);
     }
 
+    public boolean hasDrawable(KDrawable d) {
+        return mThread.hasDrawable(d);
+    }
+
+    public void exit() {
+        if (mThread.isAlive()) {
+            mThread.exit();
+        }
+    }
+
     private void init() {
         mThread = new RenderThread(getHolder());
         getHolder().addCallback(this);
@@ -52,8 +62,6 @@ public class RenderView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        if (mThread.isAlive()) {
-            mThread.exit();
-        }
+        exit();
     }
 }

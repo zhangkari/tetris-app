@@ -16,7 +16,7 @@ public class KBitmap extends KDrawable {
     public KBitmap(Bitmap bitmap, int width, int height) {
         super(width, height);
         mBitmap = bitmap;
-        mDestRect = new Rect(0, 0, width, height);
+        mDestRect = new Rect(padding, padding, width - padding, height - padding);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class KBitmap extends KDrawable {
                 mDestRect,
                 paint);
     }
-    
+
     @Override
     public void onDestroy() {
         if (mBitmap != null) {

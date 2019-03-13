@@ -11,9 +11,6 @@ public class KString extends KDrawable {
 
     private String text;
     private int fontHeight;
-
-    private int color;
-
     private boolean isDrawBorder = false;
 
     public KString(String text) {
@@ -41,16 +38,6 @@ public class KString extends KDrawable {
         paint.getTextBounds(text, 0, text.length(), rect);
         this.width = rect.width();
         this.height = rect.height() + 10;
-    }
-
-    public KString setColor(int color) {
-        this.color = color;
-        paint.setColor(color);
-        return this;
-    }
-
-    public int getColor() {
-        return this.color;
     }
 
     public KString setString(String text) {
