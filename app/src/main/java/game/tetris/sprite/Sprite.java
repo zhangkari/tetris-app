@@ -43,7 +43,7 @@ public class Sprite extends RectShape {
 
     public void next() {
         if (mShapes == null || mShapes.size() < 1) {
-            return;
+            throw new IllegalArgumentException("please set shapes");
         }
         if (mCurrent + 1 < mShapes.size()) {
             mCurrent++;
@@ -51,6 +51,19 @@ public class Sprite extends RectShape {
             mCurrent = 0;
         }
         setShapeData(mShapes.get(mCurrent));
+    }
+
+    public KShapeData peekNext() {
+        if (mShapes == null || mShapes.size() < 1) {
+            throw new IllegalArgumentException("please set shapes");
+        }
+        int next;
+        if (mCurrent + 1 < mShapes.size()) {
+            next = mCurrent + 1;
+        } else {
+            next = 0;
+        }
+        return mShapes.get(next);
     }
 
     @Override

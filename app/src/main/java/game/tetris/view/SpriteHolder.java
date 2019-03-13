@@ -5,6 +5,8 @@ import android.graphics.Paint;
 
 import game.engine.RenderView;
 import game.tetris.Constants;
+import game.tetris.collision.Checker;
+import game.tetris.collision.SpriteChecker;
 import game.tetris.data.SpriteData;
 import game.tetris.sprite.GridLayer;
 import game.tetris.sprite.RectShape;
@@ -13,16 +15,16 @@ import game.tetris.sprite.Sprite;
 
 class SpriteHolder implements SpriteListener {
     private RenderView mView;
-    private GridLayer mBgGrid;
     private RectShape mScene;
     private Sprite mSprite;
+    private Checker mChecker;
 
     @Override
     public void onInitialized(RenderView view, int width, int height) {
         mView = view;
-        mBgGrid = new GridLayer(width, height);
-        mBgGrid.setInterval(width / Constants.SCENE_COLS);
-        view.addDrawable(mBgGrid);
+        GridLayer bgGrid = new GridLayer(width, height);
+        bgGrid.setInterval(width / Constants.SCENE_COLS);
+        view.addDrawable(bgGrid);
 
         mScene = new SceneLayer(width, height);
         view.addDrawable(mScene);
@@ -32,10 +34,13 @@ class SpriteHolder implements SpriteListener {
         mSprite.setColor(Color.RED);
         mSprite.setStyle(Paint.Style.FILL);
         mSprite.setPadding(4);
+
+        mChecker = new SpriteChecker();
     }
 
     private void resetSpritePosition() {
-        mSprite.setXY(Constants.SCENE_COLS / 2 - 2, 0);
+        int x = (Constants.SCENE_COLS / 2 - 2) * mSprite.getTileSize();
+        mSprite.setXY(x, 0);
         mSprite.setShapes(new SpriteData().getSpriteData());
     }
 
@@ -70,21 +75,31 @@ class SpriteHolder implements SpriteListener {
 
     @Override
     public void onMoveLeft() {
-        mSprite.translate(mSprite.getTileSize(), 0);
+        if (mChecker.canMoveLeft(mSprite, mScene)) {
+            mSprite.translate(-mSprite.getTileSize(), 0);
+        }
     }
 
     @Override
     public void onMoveRight() {
-        mSprite.translate(-mSprite.getTileSize(), 0);
+        if (mChecker.canMoveRight(mSprite, mScene)) {
+            mSprite.translate(mSprite.getTileSize(), 0);
+        }
     }
 
     @Override
     public void onMoveDown() {
-        mSprite.translate(0, -mSprite.getTileSize());
+        if (mChecker.canMoveBottom(mSprite, mScene)) {
+            mSprite.translate(0, mSprite.getTileSize());
+        } else {
+            // todo
+        }
     }
 
     @Override
     public void onTransform() {
-        mSprite.next();
+        if (mView.hasDrawable(mSprite) && mChecker.canTransform(mSprite, mScene)) {
+            mSprite.next();
+        }
     }
 }

@@ -7,6 +7,8 @@ import java.util.List;
 public class KShapeData {
     private int mRows;
     private int mCols;
+    private int mOccupiedRows;
+    private int mOccupiedCols;
     private List<Integer> mData;
 
     public KShapeData(int rows, int cols) {
@@ -25,6 +27,7 @@ public class KShapeData {
         }
         mData.clear();
         mData.addAll(data);
+        calculateRealOccupied();
     }
 
     public void setData(int[] data) {
@@ -35,10 +38,48 @@ public class KShapeData {
         for (int d : data) {
             mData.add(d);
         }
+        calculateRealOccupied();
+    }
+
+    private void calculateRealOccupied() {
+        int realRow = mRows;
+        for (int i = mRows - 1; i >= 1; i--) {
+            int count = 0;
+            for (int j = 0; j < mCols; j++) {
+                count += getValue(i, j);
+            }
+            if (count > 0) {
+                break;
+            }
+            realRow--;
+        }
+
+        int realCols = mCols;
+        for (int i = mCols - 1; i >= 1; i--) {
+            int count = 0;
+            for (int j = 0; j < mRows; j++) {
+                count += getValue(j, i);
+            }
+            if (count > 0) {
+                break;
+            }
+            realCols--;
+        }
+
+        mOccupiedCols = realCols;
+        mOccupiedRows = realRow;
     }
 
     public int getRows() {
         return mRows;
+    }
+
+    public int getOccupiedRows() {
+        return mOccupiedRows;
+    }
+
+    public int getOccupiedCols() {
+        return mOccupiedCols;
     }
 
     public int getCols() {

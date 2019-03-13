@@ -2,7 +2,6 @@ package game.engine.drawable;
 
 import android.graphics.Canvas;
 
-import java.net.PortUnreachableException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +15,14 @@ public abstract class KShape extends KRectangle {
 
     public KShape(int width, int height) {
         super(width, height);
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
     public void setXY(int x, int y) {
@@ -35,6 +42,10 @@ public abstract class KShape extends KRectangle {
         mData = data;
         mDrawables = new ArrayList<>(data.getRows() * data.getCols());
         createDrawables();
+    }
+
+    public KShapeData getShapeData() {
+        return mData;
     }
 
     public void reset() {
@@ -71,7 +82,7 @@ public abstract class KShape extends KRectangle {
             return;
         }
         canvas.save();
-        canvas.translate(-x, -y);
+        canvas.translate(x, y);
         for (int i = 0; i < mData.getRows(); i++) {
             for (int j = 0; j < mData.getCols(); j++) {
                 onDraw(canvas, mDrawables.get(i * mData.getCols() + j), i, j);
