@@ -6,6 +6,8 @@ import android.view.View;
 
 import com.minmin.kari.tetris.R;
 
+import game.tetris.utils.DownTimer;
+import game.tetris.utils.Timer;
 import game.tetris.view.SpriteView;
 
 public class TetrisActivity extends Activity {

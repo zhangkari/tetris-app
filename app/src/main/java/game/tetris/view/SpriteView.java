@@ -4,9 +4,13 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import game.engine.RenderView;
+import game.tetris.utils.DownTimer;
+import game.tetris.utils.Timer;
 
-public class SpriteView extends RenderView implements SpriteListener {
+public class SpriteView extends RenderView implements SpriteListener, Timer.OnTickListener {
+    private int mInterval;
     private SpriteListener mSpriteListener;
+    private Timer mTimer;
 
     public SpriteView(Context context) {
         this(context, null);
@@ -22,6 +26,7 @@ public class SpriteView extends RenderView implements SpriteListener {
     }
 
     private void init() {
+        mInterval = 1000;
         mSpriteListener = new SpriteHolder();
         post(new Runnable() {
             @Override
@@ -29,6 +34,7 @@ public class SpriteView extends RenderView implements SpriteListener {
                 onSizeMeasured(getWidth(), getHeight());
             }
         });
+        mTimer = new DownTimer(getContext());
     }
 
     private void onSizeMeasured(int width, int height) {
@@ -47,6 +53,7 @@ public class SpriteView extends RenderView implements SpriteListener {
         if (mSpriteListener != null) {
             mSpriteListener.onStart();
         }
+        mTimer.startLoop(0, mInterval, this);
     }
 
     @Override
@@ -54,6 +61,7 @@ public class SpriteView extends RenderView implements SpriteListener {
         if (mSpriteListener != null) {
             mSpriteListener.onPause();
         }
+        mTimer.cancel();
     }
 
     @Override
@@ -61,6 +69,7 @@ public class SpriteView extends RenderView implements SpriteListener {
         if (mSpriteListener != null) {
             mSpriteListener.onReset();
         }
+        mTimer.cancel();
     }
 
     @Override
@@ -75,6 +84,7 @@ public class SpriteView extends RenderView implements SpriteListener {
         if (mSpriteListener != null) {
             mSpriteListener.onQuit();
         }
+        mTimer.cancel();
     }
 
     @Override
@@ -102,6 +112,13 @@ public class SpriteView extends RenderView implements SpriteListener {
     public void onTransform() {
         if (mSpriteListener != null) {
             mSpriteListener.onTransform();
+        }
+    }
+
+    @Override
+    public void onTick(int interval) {
+        if (mSpriteListener != null) {
+            mSpriteListener.onMoveDown();
         }
     }
 }
