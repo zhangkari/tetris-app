@@ -56,4 +56,8 @@ public abstract class KDrawable {
     public int getHeight() {
         return height;
     }
+
+    public int getColor() {
+        return color;
+    }
 }

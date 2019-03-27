@@ -4,13 +4,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import game.engine.RenderView;
-import game.tetris.utils.DownTimer;
-import game.tetris.utils.Timer;
 
-public class SpriteView extends RenderView implements SpriteListener, Timer.OnTickListener {
-    private int mInterval;
+public class SpriteView extends RenderView implements SpriteListener {
     private SpriteListener mSpriteListener;
-    private Timer mTimer;
 
     public SpriteView(Context context) {
         this(context, null);
@@ -26,7 +22,6 @@ public class SpriteView extends RenderView implements SpriteListener, Timer.OnTi
     }
 
     private void init() {
-        mInterval = 1000;
         mSpriteListener = new SpriteHolder();
         post(new Runnable() {
             @Override
@@ -34,7 +29,6 @@ public class SpriteView extends RenderView implements SpriteListener, Timer.OnTi
                 onSizeMeasured(getWidth(), getHeight());
             }
         });
-        mTimer = new DownTimer();
     }
 
     private void onSizeMeasured(int width, int height) {
@@ -53,7 +47,6 @@ public class SpriteView extends RenderView implements SpriteListener, Timer.OnTi
         if (mSpriteListener != null) {
             mSpriteListener.onStart();
         }
-        mTimer.startLoop(0, mInterval, this);
     }
 
     @Override
@@ -61,7 +54,6 @@ public class SpriteView extends RenderView implements SpriteListener, Timer.OnTi
         if (mSpriteListener != null) {
             mSpriteListener.onPause();
         }
-        mTimer.cancel();
     }
 
     @Override
@@ -69,7 +61,6 @@ public class SpriteView extends RenderView implements SpriteListener, Timer.OnTi
         if (mSpriteListener != null) {
             mSpriteListener.onReset();
         }
-        mTimer.cancel();
     }
 
     @Override
@@ -84,7 +75,6 @@ public class SpriteView extends RenderView implements SpriteListener, Timer.OnTi
         if (mSpriteListener != null) {
             mSpriteListener.onQuit();
         }
-        mTimer.cancel();
     }
 
     @Override
@@ -116,9 +106,9 @@ public class SpriteView extends RenderView implements SpriteListener, Timer.OnTi
     }
 
     @Override
-    public void onTick(int interval) {
+    public void onGameOver() {
         if (mSpriteListener != null) {
-            mSpriteListener.onMoveDown();
+            mSpriteListener.onGameOver();
         }
     }
 }

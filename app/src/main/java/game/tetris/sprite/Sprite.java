@@ -71,7 +71,7 @@ public class Sprite extends RectShape {
         if (d == null || canvas == null) {
             return;
         }
-        if (mData.getValue(row, col) > 0) {
+        if (mData.getValue(row, col) != 0) {
             d.onDraw(canvas);
         }
     }

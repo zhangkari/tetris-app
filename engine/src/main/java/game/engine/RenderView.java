@@ -25,8 +25,16 @@ public class RenderView extends SurfaceView implements SurfaceHolder.Callback {
         init();
     }
 
+    public void setRefreshHZ(int hz) {
+        mThread.setRefreshHZ(hz);
+    }
+
     public void addDrawable(KDrawable drawable) {
         mThread.addDrawable(drawable);
+    }
+
+    public boolean removeDrawable(KDrawable drawable) {
+        return mThread.removeDrawable(drawable);
     }
 
     public void setDrawables(Collection<KDrawable> drawables) {

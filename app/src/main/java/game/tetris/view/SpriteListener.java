@@ -21,5 +21,7 @@ public interface SpriteListener {
 
     void onTransform();
 
+    void onGameOver();
+
     void onQuit();
 }

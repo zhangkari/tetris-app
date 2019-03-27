@@ -160,10 +160,11 @@ public class SpriteChecker implements Checker {
         if (src == null || dst == null || src.size() != dst.size()) {
             throw new IllegalArgumentException("invalid arguments !");
         }
-        int count = 0;
         for (int i = 0; i < src.size(); i++) {
-            count += (src.get(i) * dst.get(i));
+            if (src.get(i) != 0 && dst.get(i) != 0) {
+                return true;
+            }
         }
-        return count >= 1;
+        return false;
     }
 }

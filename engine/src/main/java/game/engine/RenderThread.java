@@ -50,6 +50,15 @@ public class RenderThread extends Thread {
         retrieveMaxSize();
     }
 
+    public boolean removeDrawable(KDrawable d) {
+        if (mDrawables.contains(d)) {
+            mDrawables.remove(d);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public boolean hasDrawable(KDrawable d) {
         if (d == null) {
             throw new NullPointerException("Argument must not be null !");

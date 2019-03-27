@@ -22,10 +22,11 @@ public class SceneLayer extends RectShape {
             return;
         }
         d.setStyle(Paint.Style.FILL);
-        if (mData.getValue(row, col) == 1) {
-            d.setColor(Color.WHITE);
-        } else {
+        int value = mData.getValue(row, col);
+        if (value == 0) {
             d.setColor(Color.BLACK);
+        } else {
+            d.setColor(value);
         }
         d.onDraw(canvas);
     }

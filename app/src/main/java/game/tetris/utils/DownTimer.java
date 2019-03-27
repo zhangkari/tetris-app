@@ -29,6 +29,7 @@ public class DownTimer implements Timer {
             delay = 0;
         }
         onTickListener = listener;
+        mHandler.removeMessages(MSG_TICK);
         startLoopInner(delay, interval);
     }
 
