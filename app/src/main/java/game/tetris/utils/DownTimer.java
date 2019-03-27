@@ -1,31 +1,20 @@
 package game.tetris.utils;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
-import android.os.SystemClock;
+import android.os.Handler;
+import android.os.Message;
 
-public class DownTimer extends BroadcastReceiver implements Timer {
+import java.lang.ref.WeakReference;
 
-    private static final int REQUEST_ALARM_CODE = 100;
-    private static final int WINDOW_LENGTH = 50;
-    private static final String ACTION_ALARM = "Action_DownTimer_Alarm";
+public class DownTimer implements Timer {
 
-    private boolean canceled;
-    private Context context;
-    private PendingIntent pendingIntent;
+    private static final int MSG_TICK = 100;
+
+    private boolean isCanceled;
     private OnTickListener onTickListener;
-    private AlarmManager alarmManager;
+    private Handler mHandler;
 
-    public DownTimer(Context context) {
-        this.context = context;
-        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        IntentFilter filter = new IntentFilter(ACTION_ALARM);
-        context.registerReceiver(this, filter);
+    public DownTimer() {
+        mHandler = new TimerHandler(this);
     }
 
     @Override
@@ -44,37 +33,48 @@ public class DownTimer extends BroadcastReceiver implements Timer {
     }
 
     private void startLoopInner(int delay, int interval) {
-        delay += SystemClock.elapsedRealtime();
-        Intent intent = new Intent(context, DownTimer.class);
-        intent.setAction(ACTION_ALARM);
-        pendingIntent = PendingIntent.getBroadcast(context, REQUEST_ALARM_CODE, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            intent.putExtra("repeat", true);
-            intent.putExtra("interval", interval);
-            alarmManager.setWindow(AlarmManager.ELAPSED_REALTIME, delay, WINDOW_LENGTH, pendingIntent);
-        } else {
-            alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, delay, interval, pendingIntent);
-        }
+        Message msg = Message.obtain();
+        msg.what = MSG_TICK;
+        msg.arg1 = interval;
+        mHandler.sendMessageDelayed(msg, delay);
     }
 
     @Override
     public void cancel() {
-        canceled = true;
-        context.unregisterReceiver(this);
-        alarmManager.cancel(pendingIntent);
+        isCanceled = true;
+        mHandler.removeMessages(MSG_TICK);
     }
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if (!canceled && ACTION_ALARM.equals(intent.getAction())) {
-            boolean repeat = intent.getBooleanExtra("repeat", false);
-            int interval = intent.getIntExtra("interval", 0);
-            if (onTickListener != null) {
-                onTickListener.onTick(interval);
+    private void onTimerTick(int interval) {
+        if (onTickListener != null) {
+            onTickListener.onTick(interval);
+        }
+        if (!isCanceled) {
+            startLoopInner(interval, interval);
+        }
+    }
+
+    static class TimerHandler extends Handler {
+        private static final String TAG = "TimerHandler";
+        private WeakReference<DownTimer> ref;
+
+        TimerHandler(DownTimer timer) {
+            ref = new WeakReference<>(timer);
+        }
+
+        @Override
+        public void handleMessage(Message message) {
+            super.handleMessage(message);
+            Logs.d(TAG, "++ handleMessage ++");
+            if (ref == null) {
+                return;
             }
-            if (repeat) {
-                startLoop(0, interval, onTickListener);
+            DownTimer timer = ref.get();
+            if (timer == null) {
+                return;
             }
+            timer.onTimerTick(message.arg1);
+            Logs.d(TAG, "-- handleMessage --");
         }
     }
 }

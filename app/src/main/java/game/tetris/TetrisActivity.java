@@ -90,6 +90,12 @@ public class TetrisActivity extends Activity {
     }
 
     @Override
+    public void onBackPressed() {
+        mSpriteView.onQuit();
+        finish();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
     }

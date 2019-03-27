@@ -34,7 +34,7 @@ public class SpriteView extends RenderView implements SpriteListener, Timer.OnTi
                 onSizeMeasured(getWidth(), getHeight());
             }
         });
-        mTimer = new DownTimer(getContext());
+        mTimer = new DownTimer();
     }
 
     private void onSizeMeasured(int width, int height) {
