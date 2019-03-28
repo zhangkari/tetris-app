@@ -78,8 +78,8 @@ public class SpriteCheckerTest {
                 1, 0, 0, 0, 0, 1,
                 1, 0, 0, 0, 0, 1,
                 1, 0, 1, 0, 0, 1,
-                1, 0, 0, 0, 0, 1,
-                1, 0, 0, 0, 0, 1,
+                1, 0, 1, 0, 0, 1,
+                1, 0, 1, 0, 0, 1,
                 1, 1, 1, 1, 1, 1
         };
         KShapeData sceneShape = new KShapeData(6, 6);
