@@ -93,7 +93,7 @@ public class SpriteChecker implements Checker {
     }
 
     private boolean checkRight(KShapeData sprite, KShapeData scene, int row, int cols) {
-        int idx = sprite.getOccupiedCols() - 1;
+        final int idx = sprite.getOccupiedCols() - 1;
         List<Integer> src = new ArrayList<>(sprite.getRows());
         for (int i = 0; i < sprite.getRows(); i++) {
             src.add(sprite.getValue(i, idx));
@@ -101,7 +101,7 @@ public class SpriteChecker implements Checker {
 
         List<Integer> dst = new ArrayList<>(sprite.getRows());
         for (int i = 0; i < sprite.getRows(); i++) {
-            dst.add(scene.getValue(row + i, cols));
+            dst.add(scene.getValue(row + i, cols + idx));
         }
         return checkCollision(src, dst);
     }
@@ -121,7 +121,7 @@ public class SpriteChecker implements Checker {
     }
 
     private boolean checkBottom(KShapeData sprite, KShapeData scene, int row, int cols) {
-        int idx = sprite.getOccupiedRows() - 1;
+        final int idx = sprite.getOccupiedRows() - 1;
         List<Integer> src = new ArrayList<>(sprite.getCols());
         for (int i = 0; i < sprite.getCols(); i++) {
             src.add(sprite.getValue(idx, i));
@@ -129,7 +129,7 @@ public class SpriteChecker implements Checker {
 
         List<Integer> dst = new ArrayList<>(sprite.getCols());
         for (int i = 0; i < sprite.getCols(); i++) {
-            dst.add(scene.getValue(row, cols + i));
+            dst.add(scene.getValue(row + idx, cols + i));
         }
         return checkCollision(src, dst);
     }

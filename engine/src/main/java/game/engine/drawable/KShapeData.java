@@ -18,7 +18,6 @@ public class KShapeData {
         mRows = rows;
         mCols = cols;
         mData = new ArrayList<>(rows * cols);
-        reset();
     }
 
     public void setData(Collection<Integer> data) {
@@ -107,7 +106,7 @@ public class KShapeData {
     public void reset() {
         for (int i = 0; i < mRows; i++) {
             for (int j = 0; j < mCols; j++) {
-                mData.add(0);
+                setValue(i, j, 0);
             }
         }
     }

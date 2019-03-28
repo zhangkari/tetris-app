@@ -7,9 +7,9 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.view.SurfaceHolder;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.engine.drawable.KDrawable;
 
@@ -123,7 +123,7 @@ public class RenderThread extends Thread {
 
     private void init() {
         mExitFlag = true;
-        mDrawables = new ArrayList<>(16);
+        mDrawables = new CopyOnWriteArrayList<>();
         mClearPaint = new Paint(Color.WHITE);
         mClearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
     }

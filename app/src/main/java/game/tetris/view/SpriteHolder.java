@@ -8,6 +8,7 @@ import game.engine.RenderView;
 import game.tetris.Constants;
 import game.tetris.collision.Checker;
 import game.tetris.collision.SpriteChecker;
+import game.tetris.data.SceneData;
 import game.tetris.data.SpriteData;
 import game.tetris.sprite.GridLayer;
 import game.tetris.sprite.RectShape;
@@ -39,6 +40,7 @@ class SpriteHolder implements SpriteListener, Timer.OnTickListener {
         view.addDrawable(bgGrid);
 
         mScene = new SceneLayer(width, height);
+        mScene.setShapeData(SceneData.getInstance().getShapeData());
         view.addDrawable(mScene);
 
         mSprite = new Sprite(width / Constants.SCENE_COLS * 4, height / Constants.SCENE_ROWS * 4);
@@ -94,21 +96,21 @@ class SpriteHolder implements SpriteListener, Timer.OnTickListener {
     @Override
     public void onMoveLeft() {
         if (mChecker.canMoveLeft(mSprite, mScene)) {
-            mSprite.translate(-mSprite.getTileSize(), 0);
+            mSprite.moveLeft();
         }
     }
 
     @Override
     public void onMoveRight() {
         if (mChecker.canMoveRight(mSprite, mScene)) {
-            mSprite.translate(mSprite.getTileSize(), 0);
+            mSprite.moveRight();
         }
     }
 
     @Override
     public void onMoveDown() {
         if (mChecker.canMoveBottom(mSprite, mScene)) {
-            mSprite.translate(0, mSprite.getTileSize());
+            mSprite.moveDown();
         } else {
             if (mChecker.isGameOver(mSprite, mScene)) {
                 onGameOver();

@@ -35,6 +35,22 @@ public abstract class KShape extends KRectangle {
         y += dy;
     }
 
+    public void moveLeft() {
+        translate(-mTileSize, 0);
+    }
+
+    public void moveRight() {
+        translate(mTileSize, 0);
+    }
+
+    public void moveUp() {
+        translate(0, -mTileSize);
+    }
+
+    public void moveDown() {
+        translate(0, mTileSize);
+    }
+
     public void setShapeData(KShapeData data) {
         if (data == null) {
             return;

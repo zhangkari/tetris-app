@@ -6,14 +6,12 @@ import android.graphics.Paint;
 
 import game.engine.drawable.KDrawable;
 import game.tetris.Constants;
-import game.tetris.data.SceneData;
 
 public class SceneLayer extends RectShape {
     public SceneLayer(int width, int height) {
         super(width, height);
         setTileSize(width / Constants.SCENE_COLS);
         setPadding(4);
-        setShapeData(SceneData.getInstance().getShapeData());
     }
 
     @Override
