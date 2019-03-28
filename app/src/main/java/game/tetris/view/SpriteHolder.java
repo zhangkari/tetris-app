@@ -2,9 +2,14 @@ package game.tetris.view;
 
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.ShapeDrawable;
 import android.widget.Toast;
 
+import java.util.Collections;
+import java.util.List;
+
 import game.engine.RenderView;
+import game.engine.drawable.KShapeData;
 import game.tetris.Constants;
 import game.tetris.collision.Checker;
 import game.tetris.collision.SpriteChecker;
@@ -52,7 +57,7 @@ class SpriteHolder implements SpriteListener, Timer.OnTickListener {
         mChecker = new SpriteChecker();
         mTimer = new DownTimer();
         mInterval = 800;
-        mView.setRefreshHZ(2);
+        mView.setRefreshHZ(4);
     }
 
     private void resetSprite() {
@@ -62,11 +67,6 @@ class SpriteHolder implements SpriteListener, Timer.OnTickListener {
         int idx = ((int) (Math.random() * 100)) % COLORS.length;
         mSprite.setColor(COLORS[idx]);
         mView.addDrawable(mSprite);
-    }
-
-    @Override
-    public void onAchieve(int row) {
-
     }
 
     @Override
@@ -107,25 +107,43 @@ class SpriteHolder implements SpriteListener, Timer.OnTickListener {
         }
     }
 
+    private void onAchieveRows(int rows) {
+
+    }
+
     @Override
     public void onMoveDown() {
         if (mChecker.canMoveBottom(mSprite, mScene)) {
             mSprite.moveDown();
-        } else {
-            if (mChecker.isGameOver(mSprite, mScene)) {
-                onGameOver();
-            } else {
-                fillScene();
-                mView.removeDrawable(mSprite);
-                resetSprite();
+            return;
+        }
+        if (mChecker.isGameOver(mSprite, mScene)) {
+            onGameOver();
+            return;
+        }
+
+        fillSceneWithSprite(mSprite);
+        List<Integer> score = mChecker.checkScore(mSprite, mScene);
+        if (score.size() > 0) {
+            onAchieveRows(score.size());
+            Collections.sort(score); // natural ordering
+            for (int row : score) {
+                resetSceneRowValue(mScene.getShapeData(), row);
+                shiftSceneFilledRow(mScene.getShapeData(), row);
             }
         }
+        mView.removeDrawable(mSprite);
+        resetSprite();
     }
 
-    private void fillScene() {
-        int row = mSprite.getY() / mSprite.getTileSize();
-        int col = mSprite.getX() / mSprite.getTileSize();
-        int color = mSprite.getColor();
+    private void shiftSceneFilledRow(KShapeData data, int row) {
+
+    }
+
+    private void fillSceneWithSprite(Sprite sprite) {
+        int row = sprite.getY() / sprite.getTileSize();
+        int col = sprite.getX() / sprite.getTileSize();
+        int color = sprite.getColor();
         fillSceneValueAt(row, col, color);
     }
 
@@ -138,6 +156,13 @@ class SpriteHolder implements SpriteListener, Timer.OnTickListener {
                     mScene.getShapeData().setValue(row + i, col + j, value);
                 }
             }
+        }
+    }
+
+    private void resetSceneRowValue(KShapeData data, int row) {
+        final int size = data.getCols();
+        for (int i = 0; i < size; i++) {
+            data.setValue(row, i, 0);
         }
     }
 

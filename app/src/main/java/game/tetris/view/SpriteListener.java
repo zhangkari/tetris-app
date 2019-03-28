@@ -11,8 +11,6 @@ public interface SpriteListener {
 
     void onReset();
 
-    void onAchieve(int row);
-
     void onMoveLeft();
 
     void onMoveRight();

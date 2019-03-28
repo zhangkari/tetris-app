@@ -64,13 +64,6 @@ public class SpriteView extends RenderView implements SpriteListener {
     }
 
     @Override
-    public void onAchieve(int row) {
-        if (mSpriteListener != null) {
-            mSpriteListener.onAchieve(row);
-        }
-    }
-
-    @Override
     public void onQuit() {
         if (mSpriteListener != null) {
             mSpriteListener.onQuit();
@@ -110,5 +103,9 @@ public class SpriteView extends RenderView implements SpriteListener {
         if (mSpriteListener != null) {
             mSpriteListener.onGameOver();
         }
+    }
+
+    interface OnAchieveRowListener {
+        void onAchieveRows(int rows);
     }
 }

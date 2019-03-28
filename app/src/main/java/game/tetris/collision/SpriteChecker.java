@@ -44,6 +44,36 @@ public class SpriteChecker implements Checker {
         return checkCollision(list, list);
     }
 
+    @Override
+    public List<Integer> checkScore(RectShape sprite, RectShape scene) {
+        List<Integer> score = new ArrayList<>(4);
+        final int row = sprite.getY() / sprite.getTileSize();
+        final int size = sprite.getHeight() / sprite.getTileSize();
+        for (int i = 0; i < size; i++) {
+            if (isSceneRowFilled(scene, row + i)) {
+                score.add(row + i);
+            }
+        }
+        return score;
+    }
+
+    /**
+     * Check whether the specified row is filled
+     *
+     * @param scene
+     * @param row
+     * @return true failed, false not filled
+     */
+    private boolean isSceneRowFilled(RectShape scene, int row) {
+        final int sceneWidth = scene.getWidth() / scene.getTileSize();
+        for (int j = 0; j < sceneWidth; j++) {
+            if (scene.getShapeData().getValue(row, j) == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * Collision check
      *
