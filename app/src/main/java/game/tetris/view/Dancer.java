@@ -2,7 +2,7 @@ package game.tetris.view;
 
 import game.engine.RenderView;
 
-public interface SpriteListener {
+public interface Dancer {
     void onInitialized(RenderView view, int width, int height);
 
     void onStart();
@@ -22,4 +22,12 @@ public interface SpriteListener {
     void onGameOver();
 
     void onQuit();
+
+    void register(OnWonderfulListener listener);
+
+    void unregister(OnWonderfulListener listener);
+
+    interface OnWonderfulListener {
+        void onAchieve(int rows);
+    }
 }

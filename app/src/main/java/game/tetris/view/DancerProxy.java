@@ -2,11 +2,11 @@ package game.tetris.view;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.ShapeDrawable;
 import android.widget.Toast;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.engine.RenderView;
 import game.engine.drawable.KShapeData;
@@ -20,9 +20,12 @@ import game.tetris.sprite.RectShape;
 import game.tetris.sprite.SceneLayer;
 import game.tetris.sprite.Sprite;
 import game.tetris.utils.DownTimer;
+import game.tetris.utils.Logs;
 import game.tetris.utils.Timer;
 
-class SpriteHolder implements SpriteListener, Timer.OnTickListener {
+class DancerProxy implements Dancer, Timer.OnTickListener {
+    private static final String TAG = "DancerProxy";
+
     private RenderView mView;
     private RectShape mScene;
     private Sprite mSprite;
@@ -30,16 +33,22 @@ class SpriteHolder implements SpriteListener, Timer.OnTickListener {
     private Timer mTimer;
     private int mInterval;
 
+    private List<OnWonderfulListener> mListeners;
+
     private static final int[] COLORS = {
-            Color.YELLOW,
-            Color.RED,
             Color.BLUE,
-            Color.CYAN
+            Color.CYAN,
+            Color.GRAY,
+            Color.GREEN,
+            Color.RED,
+            Color.YELLOW
     };
 
     @Override
     public void onInitialized(RenderView view, int width, int height) {
         mView = view;
+        mListeners = new CopyOnWriteArrayList<>();
+
         GridLayer bgGrid = new GridLayer(width, height);
         bgGrid.setInterval(width / Constants.SCENE_COLS);
         view.addDrawable(bgGrid);
@@ -94,6 +103,20 @@ class SpriteHolder implements SpriteListener, Timer.OnTickListener {
     }
 
     @Override
+    public void register(OnWonderfulListener listener) {
+        if (listener != null && !mListeners.contains(listener)) {
+            mListeners.add(listener);
+        }
+    }
+
+    @Override
+    public void unregister(OnWonderfulListener listener) {
+        if (listener != null) {
+            mListeners.remove(listener);
+        }
+    }
+
+    @Override
     public void onMoveLeft() {
         if (mChecker.canMoveLeft(mSprite, mScene)) {
             mSprite.moveLeft();
@@ -108,7 +131,12 @@ class SpriteHolder implements SpriteListener, Timer.OnTickListener {
     }
 
     private void onAchieveRows(int rows) {
-
+        Logs.d(TAG, "onAchieveRows:" + rows);
+        for (OnWonderfulListener listener : mListeners) {
+            if (listener != null) {
+                listener.onAchieve(rows);
+            }
+        }
     }
 
     @Override

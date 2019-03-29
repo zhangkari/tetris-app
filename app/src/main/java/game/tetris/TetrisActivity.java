@@ -3,16 +3,15 @@ package game.tetris;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.minmin.kari.tetris.R;
 
-import game.tetris.utils.DownTimer;
-import game.tetris.utils.Timer;
-import game.tetris.view.SpriteView;
+import game.tetris.view.DancerView;
 
 public class TetrisActivity extends Activity {
 
-    private SpriteView mSpriteView;
+    private DancerView mDancerView;
     private View mUpView;
     private View mLeftView;
     private View mRightView;
@@ -22,6 +21,7 @@ public class TetrisActivity extends Activity {
     private View mLevelView;
     private View mAudioView;
     private View mPauseView;
+    private TextView mScore;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +31,7 @@ public class TetrisActivity extends Activity {
     }
 
     private void findViews() {
-        mSpriteView = findViewById(R.id.spriteView);
+        mDancerView = findViewById(R.id.spriteView);
         mUpView = findViewById(R.id.top);
         mLeftView = findViewById(R.id.left);
         mRightView = findViewById(R.id.right);
@@ -42,56 +42,63 @@ public class TetrisActivity extends Activity {
         mLevelView = findViewById(R.id.level);
         mAudioView = findViewById(R.id.music);
         mPauseView = findViewById(R.id.pause);
+        mScore = findViewById(R.id.tv_score);
     }
 
     private void initListeners() {
         mLeftView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSpriteView.onMoveLeft();
+                mDancerView.onMoveLeft();
             }
         });
         mRightView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSpriteView.onMoveRight();
+                mDancerView.onMoveRight();
             }
         });
         mDownView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSpriteView.onMoveDown();
+                mDancerView.onMoveDown();
             }
         });
         mUpView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSpriteView.onTransform();
+                mDancerView.onTransform();
             }
         });
         mTransform.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSpriteView.onTransform();
+                mDancerView.onTransform();
             }
         });
         mResetView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSpriteView.onReset();
+                mDancerView.onReset();
             }
         });
         mPauseView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSpriteView.onStart();
+                mDancerView.onStart();
+            }
+        });
+        mDancerView.setOnAchieveRowListener(new DancerView.OnAchieveRowListener() {
+            @Override
+            public void onAchieveRows(int rows) {
+                mScore.setText(rows + "");
             }
         });
     }
 
     @Override
     public void onBackPressed() {
-        mSpriteView.onQuit();
+        mDancerView.onQuit();
         finish();
     }
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.engine.drawable.KShapeData;
+import game.tetris.Constants;
 import game.tetris.sprite.RectShape;
 import game.tetris.sprite.Sprite;
 
@@ -49,7 +50,7 @@ public class SpriteChecker implements Checker {
         List<Integer> score = new ArrayList<>(4);
         final int row = sprite.getY() / sprite.getTileSize();
         final int size = sprite.getHeight() / sprite.getTileSize();
-        for (int i = 0; i < size; i++) {
+        for (int i = 0; i < size && row + i < Constants.SCENE_ROWS; i++) {
             if (isSceneRowFilled(scene, row + i)) {
                 score.add(row + i);
             }
