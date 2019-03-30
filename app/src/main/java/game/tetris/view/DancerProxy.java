@@ -165,7 +165,10 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
     }
 
     private void shiftSceneFilledRow(KShapeData data, int row) {
-
+        for (int i = row - 1; i >= 0; i--) {
+            data.copyRow(i, i + 1);
+        }
+        data.resetRow(0);
     }
 
     private void fillSceneWithSprite(Sprite sprite) {
@@ -188,9 +191,13 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
     }
 
     private void resetSceneRowValue(KShapeData data, int row) {
+        resetSceneRowValue(data, row, 0);
+    }
+
+    private void resetSceneRowValue(KShapeData data, int row, int value) {
         final int size = data.getCols();
         for (int i = 0; i < size; i++) {
-            data.setValue(row, i, 0);
+            data.setValue(row, i, value);
         }
     }
 

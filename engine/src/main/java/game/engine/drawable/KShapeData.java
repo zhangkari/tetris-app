@@ -1,5 +1,7 @@
 package game.engine.drawable;
 
+import com.github.karic.engine.R;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -105,9 +107,33 @@ public class KShapeData {
 
     public void reset() {
         for (int i = 0; i < mRows; i++) {
-            for (int j = 0; j < mCols; j++) {
-                setValue(i, j, 0);
-            }
+            resetRow(i);
+        }
+    }
+
+    public void resetRow(int row) {
+        setRowValue(row, 0);
+    }
+
+    public void setRowValue(int row, int value) {
+        if (row < 0 || row >= mRows) {
+            return;
+        }
+        for (int i = 0; i < mCols; i++) {
+            setValue(row, i, value);
+        }
+    }
+
+    public void copyRow(int rowSrc, int rowDst) {
+        if (rowSrc < 0 || rowSrc >= mRows || rowDst < 0 || rowDst >= mRows) {
+            throw new IllegalArgumentException("rowSrc or rowDst is invalid !");
+        }
+        if (rowSrc == rowDst) {
+            return;
+        }
+
+        for (int i = 0; i < mCols; i++) {
+            setValue(rowDst, i, getValue(rowSrc, i));
         }
     }
 }
