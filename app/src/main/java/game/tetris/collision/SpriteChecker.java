@@ -144,9 +144,7 @@ public class SpriteChecker implements Checker {
      * @return
      */
     private boolean checkTransform(KShapeData sprite, KShapeData scene, int row, int cols) {
-        return checkCollision(sprite, scene, row, cols - 1) ||
-                checkCollision(sprite, scene, row, cols + 1) ||
-                checkCollision(sprite, scene, row + 1, cols);
+        return checkCollision(sprite, scene, row, cols);
     }
 
     /**

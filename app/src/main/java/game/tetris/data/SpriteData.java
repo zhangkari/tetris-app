@@ -7,31 +7,186 @@ import game.engine.drawable.KShapeData;
 
 public class SpriteData {
 
-    private static int[] data1 = {
+    private final List<List<KShapeData>> mAllShapes;
+
+    private static int[] data100 = {
             1, 1, 0, 0,
             0, 1, 1, 0,
             0, 0, 0, 0,
             0, 0, 0, 0
     };
 
-    private static int[] data2 = {
+    private static int[] data101 = {
             0, 1, 0, 0,
             1, 1, 0, 0,
             1, 0, 0, 0,
             0, 0, 0, 0
     };
 
-    public List<KShapeData> getSpriteData() {
-        List<KShapeData> list = new ArrayList<>();
-        KShapeData d1 = new KShapeData(4, 4);
-        d1.setData(data1);
-        list.add(d1);
+    private static int[] data110 = {
+            0, 1, 1, 0,
+            1, 1, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0
+    };
 
-        KShapeData d2 = new KShapeData(4, 4);
-        d2.setData(data2);
-        list.add(d2);
+    private static int[] data111 = {
+            1, 0, 0, 0,
+            1, 1, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 0, 0
+    };
+
+    private static int[] data200 = {
+            1, 1, 1, 1,
+            0, 0, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0
+    };
+
+    private static int[] data201 = {
+            1, 0, 0, 0,
+            1, 0, 0, 0,
+            1, 0, 0, 0,
+            1, 0, 0, 0,
+    };
+
+    private static int[] data300 = {
+            1, 1, 0, 0,
+            1, 1, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0,
+    };
+
+    private static int[] data400 = {
+            1, 0, 0, 0,
+            1, 1, 0, 0,
+            1, 0, 0, 0,
+            0, 0, 0, 0
+    };
+
+    private static int[] data401 = {
+            1, 1, 1, 0,
+            0, 1, 0, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0,
+    };
+
+    private static int[] data402 = {
+            0, 1, 0, 0,
+            1, 1, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 0, 0
+    };
+
+    private static int[] data403 = {
+            0, 1, 0, 0,
+            1, 1, 1, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0
+    };
+
+    private static int[] data500 = {
+            1, 1, 0, 0,
+            0, 1, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 0, 0
+    };
+
+    private static int[] data501 = {
+            0, 0, 1, 0,
+            1, 1, 1, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0
+    };
+
+    private static int[] data502 = {
+            1, 0, 0, 0,
+            1, 0, 0, 0,
+            1, 1, 0, 0,
+            0, 0, 0, 0
+    };
+
+    private static int[] data503 = {
+            1, 1, 1, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0
+    };
+
+    private static int[] data510 = {
+            0, 1, 1, 0,
+            0, 1, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 0, 0
+    };
+
+    private static int[] data511 = {
+            1, 1, 1, 0,
+            0, 0, 1, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0
+    };
+
+    private static int[] data512 = {
+            0, 1, 0, 0,
+            0, 1, 0, 0,
+            1, 1, 0, 0,
+            0, 0, 0, 0
+    };
+
+    private static int[] data513 = {
+            1, 0, 0, 0,
+            1, 1, 1, 0,
+            0, 0, 0, 0,
+            0, 0, 0, 0
+    };
+
+    public SpriteData() {
+        mAllShapes = new ArrayList<>();
+        mAllShapes.add(synthesizeShapeData(data100, data101));
+        mAllShapes.add(synthesizeShapeData(data101, data100));
+        mAllShapes.add(synthesizeShapeData(data110, data111));
+        mAllShapes.add(synthesizeShapeData(data111, data110));
+
+        mAllShapes.add(synthesizeShapeData(data200, data201));
+        mAllShapes.add(synthesizeShapeData(data201, data200));
+
+        mAllShapes.add(synthesizeShapeData(data300));
+
+        mAllShapes.add(synthesizeShapeData(data400, data401, data402, data403));
+        mAllShapes.add(synthesizeShapeData(data401, data402, data403, data400));
+        mAllShapes.add(synthesizeShapeData(data402, data403, data400, data401));
+        mAllShapes.add(synthesizeShapeData(data403, data400, data401, data402));
+
+        mAllShapes.add(synthesizeShapeData(data500, data501, data502, data503));
+        mAllShapes.add(synthesizeShapeData(data501, data502, data503, data500));
+        mAllShapes.add(synthesizeShapeData(data502, data503, data500, data501));
+        mAllShapes.add(synthesizeShapeData(data503, data500, data501, data502));
+
+        mAllShapes.add(synthesizeShapeData(data510, data511, data512, data513));
+        mAllShapes.add(synthesizeShapeData(data511, data512, data513, data510));
+        mAllShapes.add(synthesizeShapeData(data512, data513, data510, data511));
+        mAllShapes.add(synthesizeShapeData(data513, data510, data511, data512));
+    }
+
+    private List<KShapeData> synthesizeShapeData(int[] firstFrame, int[]... nextFrames) {
+        List<KShapeData> list = new ArrayList<>(1 + nextFrames.length);
+        KShapeData first = new KShapeData(4, 4);
+        first.setData(firstFrame);
+        list.add(first);
+
+        for (int[] frame : nextFrames) {
+            KShapeData data = new KShapeData(4, 4);
+            data.setData(frame);
+            list.add(data);
+        }
 
         return list;
     }
 
+    public List<KShapeData> getSpriteData() {
+        int idx = ((int) (Math.random() * 100)) % mAllShapes.size();
+        return mAllShapes.get(idx);
+    }
 }

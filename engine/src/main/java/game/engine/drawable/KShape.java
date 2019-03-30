@@ -102,9 +102,9 @@ public abstract class KShape extends KRectangle {
         for (int i = 0; i < mData.getRows(); i++) {
             for (int j = 0; j < mData.getCols(); j++) {
                 onDraw(canvas, mDrawables.get(i * mData.getCols() + j), i, j);
-                canvas.translate(mDrawables.get(0).width, 0);
+                canvas.translate(mTileSize, 0);
             }
-            canvas.translate(-mDrawables.get(0).width * mData.getCols(), mDrawables.get(0).height);
+            canvas.translate(-mTileSize * mData.getCols(), mTileSize);
         }
         canvas.restore();
     }

@@ -21,13 +21,15 @@ public class TetrisActivity extends Activity {
     private View mLevelView;
     private View mAudioView;
     private View mPauseView;
-    private TextView mScore;
+    private TextView mScoreView;
+    private int mScore;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tetris);
         findViews();
         initListeners();
+        mScore = 0;
     }
 
     private void findViews() {
@@ -42,7 +44,7 @@ public class TetrisActivity extends Activity {
         mLevelView = findViewById(R.id.level);
         mAudioView = findViewById(R.id.music);
         mPauseView = findViewById(R.id.pause);
-        mScore = findViewById(R.id.tv_score);
+        mScoreView = findViewById(R.id.tv_score);
     }
 
     private void initListeners() {
@@ -91,9 +93,40 @@ public class TetrisActivity extends Activity {
         mDancerView.setOnAchieveRowListener(new DancerView.OnAchieveRowListener() {
             @Override
             public void onAchieveRows(int rows) {
-                mScore.setText(rows + "");
+                formatScore(rows);
             }
         });
+    }
+
+    private void formatScore(int row) {
+        int score = 0;
+        switch (row) {
+            case 1:
+                score = 100;
+                break;
+
+            case 2:
+                score = 200;
+                break;
+
+            case 3:
+                score = 500;
+                break;
+
+            case 4:
+                score = 800;
+                break;
+
+            case 5:
+                score = 1200;
+                break;
+
+            case 6:
+                score = 1600;
+                break;
+        }
+        mScore += score;
+        mScoreView.setText(String.valueOf(mScore));
     }
 
     @Override
