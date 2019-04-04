@@ -1,20 +1,34 @@
 package game.tetris.utils;
 
 import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Message;
 
 import java.lang.ref.WeakReference;
 
-public class DownTimer implements Timer {
+public class UniversalTimer implements Timer {
+    private static final String TAG = "UniversalTimer";
 
     private static final int MSG_TICK = 100;
+    private static final int MSG_QUIT = 800;
 
     private boolean isCanceled;
     private OnTickListener onTickListener;
     private Handler mHandler;
 
-    public DownTimer() {
+    public UniversalTimer() {
         mHandler = new TimerHandler(this);
+    }
+
+    public UniversalTimer(boolean newThread) {
+        if (newThread) {
+            HandlerThread thread = new HandlerThread(TAG);
+            thread.start();
+            mHandler = new TimerHandler(this, thread.getLooper());
+        } else {
+            mHandler = new TimerHandler(this);
+        }
     }
 
     @Override
@@ -28,6 +42,7 @@ public class DownTimer implements Timer {
         if (delay < 0) {
             delay = 0;
         }
+        isCanceled = false;
         onTickListener = listener;
         mHandler.removeMessages(MSG_TICK);
         startLoopInner(delay, interval);
@@ -46,6 +61,12 @@ public class DownTimer implements Timer {
         mHandler.removeMessages(MSG_TICK);
     }
 
+    @Override
+    public void destroy() {
+        cancel();
+        onTickListener = null;
+    }
+
     private void onTimerTick(int interval) {
         if (onTickListener != null) {
             onTickListener.onTick(interval);
@@ -57,25 +78,39 @@ public class DownTimer implements Timer {
 
     static class TimerHandler extends Handler {
         private static final String TAG = "TimerHandler";
-        private WeakReference<DownTimer> ref;
+        private WeakReference<UniversalTimer> ref;
 
-        TimerHandler(DownTimer timer) {
+        TimerHandler(UniversalTimer timer) {
+            super();
+            ref = new WeakReference<>(timer);
+        }
+
+        TimerHandler(UniversalTimer timer, Looper looper) {
+            super(looper);
             ref = new WeakReference<>(timer);
         }
 
         @Override
         public void handleMessage(Message message) {
             super.handleMessage(message);
-            Logs.d(TAG, "++ handleMessage ++");
             if (ref == null) {
                 return;
             }
-            DownTimer timer = ref.get();
+            UniversalTimer timer = ref.get();
             if (timer == null) {
                 return;
             }
-            timer.onTimerTick(message.arg1);
-            Logs.d(TAG, "-- handleMessage --");
+            switch (message.what) {
+                case MSG_TICK:
+                    timer.onTimerTick(message.arg1);
+                    break;
+
+                case MSG_QUIT:
+                    if (getLooper() != Looper.getMainLooper()) {
+                        getLooper().quit();
+                    }
+                    break;
+            }
         }
     }
 }

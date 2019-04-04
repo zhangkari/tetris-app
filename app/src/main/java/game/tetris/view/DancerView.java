@@ -26,6 +26,11 @@ public class DancerView extends RenderView implements Dancer, Dancer.OnWonderful
         mListener = listener;
     }
 
+    @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
     private void init() {
         mDancer = new DancerProxy();
         post(new Runnable() {

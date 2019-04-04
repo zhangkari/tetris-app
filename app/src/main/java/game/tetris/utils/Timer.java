@@ -5,6 +5,8 @@ public interface Timer {
 
     void cancel();
 
+    void destroy();
+
     interface OnTickListener {
         void onTick(int interval);
     }

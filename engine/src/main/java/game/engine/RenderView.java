@@ -33,6 +33,12 @@ public class RenderView extends SurfaceView implements SurfaceHolder.Callback {
         mThread.addDrawable(drawable);
     }
 
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        mThread.invalidate();
+    }
+
     public boolean removeDrawable(KDrawable drawable) {
         return mThread.removeDrawable(drawable);
     }

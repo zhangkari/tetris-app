@@ -1,12 +1,11 @@
 package game.tetris.view;
 
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.engine.RenderView;
 import game.engine.drawable.KShapeData;
@@ -19,9 +18,9 @@ import game.tetris.sprite.GridLayer;
 import game.tetris.sprite.RectShape;
 import game.tetris.sprite.SceneLayer;
 import game.tetris.sprite.Sprite;
-import game.tetris.utils.DownTimer;
 import game.tetris.utils.Logs;
 import game.tetris.utils.Timer;
+import game.tetris.utils.UniversalTimer;
 
 class DancerProxy implements Dancer, Timer.OnTickListener {
     private static final String TAG = "DancerProxy";
@@ -35,19 +34,12 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
 
     private List<OnWonderfulListener> mListeners;
 
-    private static final int[] COLORS = {
-            Color.BLUE,
-            Color.CYAN,
-            Color.GRAY,
-            Color.GREEN,
-            Color.RED,
-            Color.YELLOW
-    };
+    private static final int[] COLORS = Constants.COLORS;
 
     @Override
     public void onInitialized(RenderView view, int width, int height) {
         mView = view;
-        mListeners = new CopyOnWriteArrayList<>();
+        mListeners = new ArrayList<>();
 
         GridLayer bgGrid = new GridLayer(width, height);
         bgGrid.setInterval(width / Constants.SCENE_COLS);
@@ -59,14 +51,14 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
 
         mSprite = new Sprite(width / Constants.SCENE_COLS * 4, height / Constants.SCENE_ROWS * 4);
         mSprite.setTileSize(width / Constants.SCENE_COLS);
-        mSprite.setColor(Color.RED);
         mSprite.setStyle(Paint.Style.FILL);
         mSprite.setPadding(4);
+        mSprite.setColor(COLORS[0]);
 
         mChecker = new SpriteChecker();
-        mTimer = new DownTimer();
+        mTimer = new UniversalTimer();
         mInterval = 800;
-        mView.setRefreshHZ(4);
+        mView.setRefreshHZ(5);
     }
 
     private void resetSprite() {
@@ -75,7 +67,7 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
         mSprite.setShapes(new SpriteData().getSpriteData());
         int idx = ((int) (Math.random() * 100)) % COLORS.length;
         mSprite.setColor(COLORS[idx]);
-        mView.addDrawable(mSprite);
+        mView.invalidate();
     }
 
     @Override
@@ -98,7 +90,7 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
 
     @Override
     public void onQuit() {
-        mTimer.cancel();
+        mTimer.destroy();
         mView.exit();
     }
 
@@ -120,6 +112,7 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
     public void onMoveLeft() {
         if (mChecker.canMoveLeft(mSprite, mScene)) {
             mSprite.moveLeft();
+            mView.invalidate();
         }
     }
 
@@ -127,6 +120,7 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
     public void onMoveRight() {
         if (mChecker.canMoveRight(mSprite, mScene)) {
             mSprite.moveRight();
+            mView.invalidate();
         }
     }
 
@@ -143,6 +137,7 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
     public void onMoveDown() {
         if (mChecker.canMoveBottom(mSprite, mScene)) {
             mSprite.moveDown();
+            mView.invalidate();
             return;
         }
         if (mChecker.isGameOver(mSprite, mScene)) {
@@ -160,7 +155,6 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
                 shiftSceneFilledRow(mScene.getShapeData(), row);
             }
         }
-        mView.removeDrawable(mSprite);
         resetSprite();
     }
 
@@ -205,6 +199,7 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
     public void onTransform() {
         if (mView.hasDrawable(mSprite) && mChecker.canTransform(mSprite, mScene)) {
             mSprite.next();
+            mView.invalidate();
         }
     }
 

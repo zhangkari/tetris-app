@@ -2,17 +2,20 @@ package game.tetris;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
 import com.minmin.kari.tetris.R;
 
+import game.tetris.utils.Accelerator;
+import game.tetris.utils.MoveAccelerator;
 import game.tetris.view.DancerView;
 
 public class TetrisActivity extends Activity {
+    final static String TAG = "TetrisActivity";
 
     private DancerView mDancerView;
-    private View mUpView;
     private View mLeftView;
     private View mRightView;
     private View mDownView;
@@ -24,17 +27,19 @@ public class TetrisActivity extends Activity {
     private TextView mScoreView;
     private int mScore;
 
+    private Accelerator mAccelerator;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tetris);
         findViews();
         initListeners();
         mScore = 0;
+        mAccelerator = new MoveAccelerator(mDancerView);
     }
 
     private void findViews() {
         mDancerView = findViewById(R.id.spriteView);
-        mUpView = findViewById(R.id.top);
         mLeftView = findViewById(R.id.left);
         mRightView = findViewById(R.id.right);
         mDownView = findViewById(R.id.down);
@@ -48,30 +53,69 @@ public class TetrisActivity extends Activity {
     }
 
     private void initListeners() {
-        mLeftView.setOnClickListener(new View.OnClickListener() {
+        mLeftView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                mDancerView.onMoveLeft();
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mAccelerator.setDirection(Accelerator.LEFT);
+                        mAccelerator.startAccelerate();
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        v.performClick();
+                        mAccelerator.stopAccelerate();
+                        break;
+
+                    default:
+                        break;
+                }
+                return true;
             }
         });
-        mRightView.setOnClickListener(new View.OnClickListener() {
+
+        mRightView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                mDancerView.onMoveRight();
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mAccelerator.setDirection(Accelerator.RIGHT);
+                        mAccelerator.startAccelerate();
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        v.performClick();
+                        mAccelerator.stopAccelerate();
+                        break;
+
+                    default:
+                        break;
+                }
+                return true;
             }
         });
-        mDownView.setOnClickListener(new View.OnClickListener() {
+
+        mDownView.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                mDancerView.onMoveDown();
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mAccelerator.setDirection(Accelerator.DOWN);
+                        mAccelerator.startAccelerate();
+                        break;
+
+                    case MotionEvent.ACTION_UP:
+                        v.performClick();
+                        mAccelerator.stopAccelerate();
+                        break;
+
+                    default:
+                        break;
+                }
+                return true;
             }
         });
-        mUpView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mDancerView.onTransform();
-            }
-        });
+
         mTransform.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,6 +181,7 @@ public class TetrisActivity extends Activity {
 
     @Override
     public void onDestroy() {
+        mAccelerator.destroy();
         super.onDestroy();
     }
 }

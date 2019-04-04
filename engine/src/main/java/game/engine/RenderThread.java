@@ -7,9 +7,9 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.view.SurfaceHolder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import game.engine.drawable.KDrawable;
 
@@ -51,12 +51,7 @@ public class RenderThread extends Thread {
     }
 
     public boolean removeDrawable(KDrawable d) {
-        if (mDrawables.contains(d)) {
-            mDrawables.remove(d);
-            return true;
-        } else {
-            return false;
-        }
+        return mDrawables.remove(d);
     }
 
     public boolean hasDrawable(KDrawable d) {
@@ -86,6 +81,12 @@ public class RenderThread extends Thread {
         onDestroy();
     }
 
+    public void invalidate() {
+        synchronized (this) {
+            notify();
+        }
+    }
+
     @Override
     public void run() {
         final int interval = 1000 / mRefreshHZ;
@@ -95,7 +96,9 @@ public class RenderThread extends Thread {
             onDraw(canvas);
             mHolder.unlockCanvasAndPost(canvas);
             try {
-                Thread.sleep(interval);
+                synchronized (this) {
+                    wait(interval);
+                }
             } catch (Exception e) {
                 mExitFlag = true;
             }
@@ -123,7 +126,7 @@ public class RenderThread extends Thread {
 
     private void init() {
         mExitFlag = true;
-        mDrawables = new CopyOnWriteArrayList<>();
+        mDrawables = new ArrayList<>();
         mClearPaint = new Paint(Color.WHITE);
         mClearPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
     }
