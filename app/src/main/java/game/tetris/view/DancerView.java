@@ -83,6 +83,14 @@ public class DancerView extends RenderView implements Dancer, Dancer.OnWonderful
     }
 
     @Override
+    public void onResume() {
+        if (mDancer != null) {
+            mDancer.onResume();
+            mStatus = STATUS_RUNNING;
+        }
+    }
+
+    @Override
     public void onReset() {
         if (mDancer != null) {
             mDancer.onReset();

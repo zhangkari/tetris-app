@@ -22,6 +22,8 @@ public class SceneLayer extends RectShape {
         d.setStyle(Paint.Style.FILL);
         int value = mData.getValue(row, col);
         if (value == 0) {
+            d.setColor(Color.WHITE);
+        } else if (value == 1) {
             d.setColor(Color.BLACK);
         } else {
             d.setColor(value);

@@ -18,14 +18,21 @@ public class TetrisActivity extends Activity {
     final static String TAG = "TetrisActivity";
 
     private DancerView mDancerView;
+
     private View mLeftView;
     private View mRightView;
     private View mDownView;
+
     private View mTransform;
+
     private View mResetView;
     private View mLevelView;
     private View mAudioView;
+
+    private View mStartView;
     private View mPauseView;
+    private View mResumeView;
+
     private TextView mScoreView;
     private ForecasterView mForecaster;
     private int mScore;
@@ -52,8 +59,14 @@ public class TetrisActivity extends Activity {
         mLevelView = findViewById(R.id.level);
         mAudioView = findViewById(R.id.music);
         mPauseView = findViewById(R.id.pause);
+        mResumeView = findViewById(R.id.resume);
+        mStartView = findViewById(R.id.start);
         mScoreView = findViewById(R.id.tv_score);
         mForecaster = findViewById(R.id.forecaster);
+
+        mStartView.setVisibility(View.VISIBLE);
+        mPauseView.setVisibility(View.GONE);
+        mResumeView.setVisibility(View.GONE);
     }
 
     private void initListeners() {
@@ -143,7 +156,25 @@ public class TetrisActivity extends Activity {
         mPauseView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mDancerView.onPause();
+                mPauseView.setVisibility(View.GONE);
+                mResumeView.setVisibility(View.VISIBLE);
+            }
+        });
+        mStartView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 mDancerView.onStart();
+                mStartView.setVisibility(View.GONE);
+                mPauseView.setVisibility(View.VISIBLE);
+            }
+        });
+        mResumeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDancerView.onResume();
+                mResumeView.setVisibility(View.GONE);
+                mPauseView.setVisibility(View.VISIBLE);
             }
         });
         mDancerView.setOnAchieveRowListener(new DancerView.OnAchieveRowListener() {
@@ -154,8 +185,8 @@ public class TetrisActivity extends Activity {
         });
         mDancerView.register(new Dancer.OnNextShapeOccurredListener() {
             @Override
-            public void onNextShape(int idx) {
-                mForecaster.setShapeIndex(idx);
+            public void onNextShape(int idx, int color) {
+                mForecaster.setShapeIndexAndColor(idx, color);
             }
         });
     }

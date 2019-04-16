@@ -59,10 +59,28 @@
             style="@style/btn_setting"
             android:text="Level" />
 
-        <TextView
-            android:id="@+id/pause"
-            style="@style/btn_setting"
-            android:text="Pause" />
+        <FrameLayout
+            android:layout_width="80dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/start"
+                style="@style/btn_setting"
+                android:text="Start"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/pause"
+                style="@style/btn_setting"
+                android:text="Pause"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/resume"
+                style="@style/btn_setting"
+                android:text="Resume"
+                android:visibility="gone" />
+        </FrameLayout>
     </LinearLayout>
 
     <LinearLayout

@@ -11,13 +11,14 @@ public class RectShape extends KShape {
 
     @Override
     public KDrawable onCreateShapeItem(int row, int col) {
-        KDrawable d = new KRectangle(mTileSize, mTileSize);
-        if (style != null) {
-            d.setStyle(style);
-        }
-        if (color != 0) {
+        return new KRectangle(mTileSize, mTileSize);
+    }
+
+    @Override
+    public void setColor(int color) {
+        super.setColor(color);
+        for (KDrawable d : mDrawables) {
             d.setColor(color);
         }
-        return d;
     }
 }

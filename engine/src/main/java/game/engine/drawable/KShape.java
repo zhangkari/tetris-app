@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public abstract class KShape extends KRectangle {
     protected KShapeData mData;
@@ -57,6 +58,7 @@ public abstract class KShape extends KRectangle {
         }
         mData = data;
         mDrawables = new ArrayList<>(data.getRows() * data.getCols());
+        mDrawables = new CopyOnWriteArrayList<>(mDrawables);
         createDrawables();
     }
 
@@ -85,6 +87,12 @@ public abstract class KShape extends KRectangle {
             for (int j = 0; j < mData.getCols(); j++) {
                 KDrawable drawable = onCreateShapeItem(i, j);
                 drawable.setPadding(padding);
+                if (style != null) {
+                    drawable.setStyle(style);
+                }
+                if (color != 0) {
+                    drawable.setColor(color);
+                }
                 mDrawables.add(drawable);
             }
         }

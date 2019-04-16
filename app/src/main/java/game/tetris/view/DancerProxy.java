@@ -38,6 +38,7 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
     private static final int[] COLORS = Constants.COLORS;
     private SpriteData mSpriteData;
     private int mNextShapeIdx;
+    private int mNextColor;
 
     public DancerProxy() {
         mScoreListeners = new ArrayList<>();
@@ -60,6 +61,7 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
         mSprite.setTileSize(width / Constants.SCENE_COLS);
         mSprite.setStyle(Paint.Style.FILL);
         mSprite.setPadding(4);
+        view.addDrawable(mSprite);
 
         mChecker = new SpriteChecker();
         mTimer = new UniversalTimer();
@@ -74,21 +76,20 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
         mSprite.setXY(x, 0);
 
         mSprite.setShapes(mSpriteData.getAllShapes().get(mNextShapeIdx));
+        mSprite.setColor(mNextColor);
         generateNextShape();
         notifyNextShapeChanged();
-
-        int idx = ((int) (Math.random() * 100)) % COLORS.length;
-        mSprite.setColor(COLORS[idx]);
         mView.invalidate();
     }
 
     private void generateNextShape() {
         mNextShapeIdx = ((int) (Math.random() * 1000)) % mSpriteData.getAllShapes().size();
+        mNextColor = COLORS[((int) (Math.random() * 1000)) % COLORS.length];
     }
 
     private void notifyNextShapeChanged() {
         for (OnNextShapeOccurredListener listener : mNextShapeListeners) {
-            listener.onNextShape(mNextShapeIdx);
+            listener.onNextShape(mNextShapeIdx, mNextColor);
         }
     }
 
@@ -96,7 +97,6 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
     public void onStart() {
         mScene.reset();
         resetSprite();
-        mView.addDrawable(mSprite);
         mTimer.startLoop(0, mInterval, this);
     }
 
@@ -106,8 +106,14 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
     }
 
     @Override
+    public void onResume() {
+        mTimer.startLoop(0, mInterval, this);
+    }
+
+    @Override
     public void onReset() {
         mTimer.cancel();
+        mScene.reset();
     }
 
     @Override

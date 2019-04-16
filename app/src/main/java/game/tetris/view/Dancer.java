@@ -9,6 +9,8 @@ public interface Dancer {
 
     void onPause();
 
+    void onResume();
+
     void onReset();
 
     void onMoveLeft();
@@ -36,6 +38,6 @@ public interface Dancer {
     }
 
     interface OnNextShapeOccurredListener {
-        void onNextShape(int idx);
+        void onNextShape(int idx, int color);
     }
 }

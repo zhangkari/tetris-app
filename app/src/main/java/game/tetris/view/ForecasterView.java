@@ -36,7 +36,8 @@ public class ForecasterView extends View {
         mPaint = new Paint();
     }
 
-    public void setShapeIndex(int idx) {
+    public void setShapeIndexAndColor(int idx, int color) {
+        mPaint.setColor(color);
         if (idx > 0 && idx < mSpriteData.getAllShapes().size()) {
             mShapeIdx = idx;
             invalidate();
