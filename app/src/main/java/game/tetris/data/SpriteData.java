@@ -115,9 +115,9 @@ public class SpriteData {
     };
 
     private static int[] data510 = {
-            0, 1, 1, 0,
-            0, 1, 0, 0,
-            0, 1, 0, 0,
+            1, 1, 0, 0,
+            1, 0, 0, 0,
+            1, 0, 0, 0,
             0, 0, 0, 0
     };
 
@@ -185,8 +185,7 @@ public class SpriteData {
         return list;
     }
 
-    public List<KShapeData> getSpriteData() {
-        int idx = ((int) (Math.random() * 100)) % mAllShapes.size();
-        return mAllShapes.get(idx);
+    public List<List<KShapeData>> getAllShapes() {
+        return mAllShapes;
     }
 }

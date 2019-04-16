@@ -10,7 +10,9 @@ import com.minmin.kari.tetris.R;
 
 import game.tetris.utils.Accelerator;
 import game.tetris.utils.MoveAccelerator;
+import game.tetris.view.Dancer;
 import game.tetris.view.DancerView;
+import game.tetris.view.ForecasterView;
 
 public class TetrisActivity extends Activity {
     final static String TAG = "TetrisActivity";
@@ -25,6 +27,7 @@ public class TetrisActivity extends Activity {
     private View mAudioView;
     private View mPauseView;
     private TextView mScoreView;
+    private ForecasterView mForecaster;
     private int mScore;
 
     private Accelerator mAccelerator;
@@ -50,6 +53,7 @@ public class TetrisActivity extends Activity {
         mAudioView = findViewById(R.id.music);
         mPauseView = findViewById(R.id.pause);
         mScoreView = findViewById(R.id.tv_score);
+        mForecaster = findViewById(R.id.forecaster);
     }
 
     private void initListeners() {
@@ -58,8 +62,10 @@ public class TetrisActivity extends Activity {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        mAccelerator.setDirection(Accelerator.LEFT);
-                        mAccelerator.startAccelerate();
+                        if (mDancerView.getStatus() == DancerView.STATUS_RUNNING) {
+                            mAccelerator.setDirection(Accelerator.LEFT);
+                            mAccelerator.startAccelerate();
+                        }
                         break;
 
                     case MotionEvent.ACTION_UP:
@@ -79,8 +85,10 @@ public class TetrisActivity extends Activity {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        mAccelerator.setDirection(Accelerator.RIGHT);
-                        mAccelerator.startAccelerate();
+                        if (mDancerView.getStatus() == DancerView.STATUS_RUNNING) {
+                            mAccelerator.setDirection(Accelerator.RIGHT);
+                            mAccelerator.startAccelerate();
+                        }
                         break;
 
                     case MotionEvent.ACTION_UP:
@@ -100,8 +108,10 @@ public class TetrisActivity extends Activity {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        mAccelerator.setDirection(Accelerator.DOWN);
-                        mAccelerator.startAccelerate();
+                        if (mDancerView.getStatus() == DancerView.STATUS_RUNNING) {
+                            mAccelerator.setDirection(Accelerator.DOWN);
+                            mAccelerator.startAccelerate();
+                        }
                         break;
 
                     case MotionEvent.ACTION_UP:
@@ -119,7 +129,9 @@ public class TetrisActivity extends Activity {
         mTransform.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDancerView.onTransform();
+                if (mDancerView.getStatus() == DancerView.STATUS_RUNNING) {
+                    mDancerView.onTransform();
+                }
             }
         });
         mResetView.setOnClickListener(new View.OnClickListener() {
@@ -138,6 +150,12 @@ public class TetrisActivity extends Activity {
             @Override
             public void onAchieveRows(int rows) {
                 formatScore(rows);
+            }
+        });
+        mDancerView.register(new Dancer.OnNextShapeOccurredListener() {
+            @Override
+            public void onNextShape(int idx) {
+                mForecaster.setShapeIndex(idx);
             }
         });
     }

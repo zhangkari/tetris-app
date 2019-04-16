@@ -27,7 +27,15 @@ public interface Dancer {
 
     void unregister(OnWonderfulListener listener);
 
+    void register(OnNextShapeOccurredListener listener);
+
+    void unregister(OnNextShapeOccurredListener listener);
+
     interface OnWonderfulListener {
         void onAchieve(int rows);
+    }
+
+    interface OnNextShapeOccurredListener {
+        void onNextShape(int idx);
     }
 }

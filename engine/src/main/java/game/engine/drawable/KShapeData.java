@@ -1,7 +1,5 @@
 package game.engine.drawable;
 
-import com.github.karic.engine.R;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;

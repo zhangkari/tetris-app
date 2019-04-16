@@ -15,7 +15,7 @@ public class MoveAccelerator implements Accelerator, Timer.OnTickListener {
 
     @Override
     public void startAccelerate() {
-        timer.startLoop(0, 200, this);
+        timer.startLoop(0, 100, this);
     }
 
     @Override

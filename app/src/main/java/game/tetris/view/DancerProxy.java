@@ -32,14 +32,21 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
     private Timer mTimer;
     private int mInterval;
 
-    private List<OnWonderfulListener> mListeners;
+    private List<OnWonderfulListener> mScoreListeners;
+    private List<OnNextShapeOccurredListener> mNextShapeListeners;
 
     private static final int[] COLORS = Constants.COLORS;
+    private SpriteData mSpriteData;
+    private int mNextShapeIdx;
+
+    public DancerProxy() {
+        mScoreListeners = new ArrayList<>();
+        mNextShapeListeners = new ArrayList<>();
+    }
 
     @Override
     public void onInitialized(RenderView view, int width, int height) {
         mView = view;
-        mListeners = new ArrayList<>();
 
         GridLayer bgGrid = new GridLayer(width, height);
         bgGrid.setInterval(width / Constants.SCENE_COLS);
@@ -53,21 +60,36 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
         mSprite.setTileSize(width / Constants.SCENE_COLS);
         mSprite.setStyle(Paint.Style.FILL);
         mSprite.setPadding(4);
-        mSprite.setColor(COLORS[0]);
 
         mChecker = new SpriteChecker();
         mTimer = new UniversalTimer();
         mInterval = 800;
         mView.setRefreshHZ(5);
+        mSpriteData = new SpriteData();
+        generateNextShape();
     }
 
     private void resetSprite() {
         int x = (Constants.SCENE_COLS / 2 - 2) * mSprite.getTileSize();
         mSprite.setXY(x, 0);
-        mSprite.setShapes(new SpriteData().getSpriteData());
+
+        mSprite.setShapes(mSpriteData.getAllShapes().get(mNextShapeIdx));
+        generateNextShape();
+        notifyNextShapeChanged();
+
         int idx = ((int) (Math.random() * 100)) % COLORS.length;
         mSprite.setColor(COLORS[idx]);
         mView.invalidate();
+    }
+
+    private void generateNextShape() {
+        mNextShapeIdx = ((int) (Math.random() * 1000)) % mSpriteData.getAllShapes().size();
+    }
+
+    private void notifyNextShapeChanged() {
+        for (OnNextShapeOccurredListener listener : mNextShapeListeners) {
+            listener.onNextShape(mNextShapeIdx);
+        }
     }
 
     @Override
@@ -96,15 +118,29 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
 
     @Override
     public void register(OnWonderfulListener listener) {
-        if (listener != null && !mListeners.contains(listener)) {
-            mListeners.add(listener);
+        if (listener != null && !mScoreListeners.contains(listener)) {
+            mScoreListeners.add(listener);
         }
     }
 
     @Override
     public void unregister(OnWonderfulListener listener) {
         if (listener != null) {
-            mListeners.remove(listener);
+            mScoreListeners.remove(listener);
+        }
+    }
+
+    @Override
+    public void register(OnNextShapeOccurredListener listener) {
+        if (listener != null && !mNextShapeListeners.contains(listener)) {
+            mNextShapeListeners.add(listener);
+        }
+    }
+
+    @Override
+    public void unregister(OnNextShapeOccurredListener listener) {
+        if (listener != null) {
+            mNextShapeListeners.remove(listener);
         }
     }
 
@@ -126,7 +162,7 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
 
     private void onAchieveRows(int rows) {
         Logs.d(TAG, "onAchieveRows:" + rows);
-        for (OnWonderfulListener listener : mListeners) {
+        for (OnWonderfulListener listener : mScoreListeners) {
             if (listener != null) {
                 listener.onAchieve(rows);
             }
