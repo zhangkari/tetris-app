@@ -52,13 +52,12 @@ public abstract class KShape extends KRectangle {
         translate(0, mTileSize);
     }
 
-    public void setShapeData(KShapeData data) {
+    public synchronized void setShapeData(KShapeData data) {
         if (data == null) {
             return;
         }
         mData = data;
         mDrawables = new ArrayList<>(data.getRows() * data.getCols());
-        mDrawables = new CopyOnWriteArrayList<>(mDrawables);
         createDrawables();
     }
 
@@ -101,7 +100,7 @@ public abstract class KShape extends KRectangle {
     public abstract KDrawable onCreateShapeItem(int row, int cols);
 
     @Override
-    public final void onDraw(Canvas canvas) {
+    public synchronized final void onDraw(Canvas canvas) {
         if (mData == null) {
             return;
         }

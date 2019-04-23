@@ -35,23 +35,29 @@ public class RenderThread extends Thread {
         init();
     }
 
-    public void addDrawable(KDrawable drawable) {
+    public synchronized void addDrawable(KDrawable drawable) {
         if (drawable != null && !mDrawables.contains(drawable)) {
-            mDrawables.add(drawable);
+            if (mDrawables.add(drawable)) {
+                updateMaxSizeAfterAdd(drawable);
+            }
         }
-        retrieveMaxSize();
     }
 
-    public void setDrawables(Collection<KDrawable> drawables) {
+    public synchronized void setDrawables(Collection<KDrawable> drawables) {
         mDrawables.clear();
         if (drawables != null) {
-            mDrawables.addAll(drawables);
+            if (mDrawables.addAll(drawables)) {
+                retrieveMaxSize();
+            }
         }
-        retrieveMaxSize();
     }
 
-    public boolean removeDrawable(KDrawable d) {
-        return mDrawables.remove(d);
+    public synchronized boolean removeDrawable(KDrawable d) {
+        boolean result = mDrawables.remove(d);
+        if (result) {
+            updateMaxSizeAfterRemove(d);
+        }
+        return result;
     }
 
     public boolean hasDrawable(KDrawable d) {
@@ -109,7 +115,7 @@ public class RenderThread extends Thread {
         canvas.drawRect(0, 0, mMaxWidth, mMaxHeight, mClearPaint);
     }
 
-    private void onDraw(Canvas canvas) {
+    private synchronized void onDraw(Canvas canvas) {
         for (KDrawable d : mDrawables) {
             d.onDraw(canvas);
         }
@@ -143,5 +149,29 @@ public class RenderThread extends Thread {
                 mMaxHeight = d.getHeight();
             }
         }
+    }
+
+    private void updateMaxSizeAfterAdd(KDrawable d) {
+        if (d == null) {
+            return;
+        }
+
+        if (d.getWidth() > mMaxWidth) {
+            mMaxWidth = d.getWidth();
+        }
+
+        if (d.getHeight() > mMaxHeight) {
+            mMaxHeight = d.getHeight();
+        }
+    }
+
+    private void updateMaxSizeAfterRemove(KDrawable d) {
+        if (d == null) {
+            return;
+        }
+        if (d.getWidth() < mMaxWidth && d.getHeight() < mMaxHeight) {
+            return;
+        }
+        retrieveMaxSize();
     }
 }
