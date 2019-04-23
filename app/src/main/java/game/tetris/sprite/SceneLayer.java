@@ -24,7 +24,7 @@ public class SceneLayer extends RectShape {
         if (value == 0) {
             d.setColor(Color.WHITE);
         } else if (value == 1) {
-            d.setColor(Color.BLACK);
+            d.setColor(Constants.COLORS[0]);
         } else {
             d.setColor(value);
         }
