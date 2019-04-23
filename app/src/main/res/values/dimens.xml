@@ -3,4 +3,7 @@
     <dimen name="btn_setting">20dp</dimen>
     <dimen name="btn_direction">50dp</dimen>
     <dimen name="btn_transform">50dp</dimen>
+
+    <dimen name="indicator_size">8dp</dimen>
+    <dimen name="menu_margin">20dp</dimen>
 </resources>

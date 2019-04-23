@@ -1,6 +1,7 @@
 package game.tetris;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -10,72 +11,74 @@ import com.minmin.kari.tetris.R;
 
 import game.tetris.utils.Accelerator;
 import game.tetris.utils.MoveAccelerator;
+import game.tetris.utils.ViewPiece;
 import game.tetris.view.Dancer;
 import game.tetris.view.DancerView;
 import game.tetris.view.ForecasterView;
 
 public class TetrisActivity extends Activity {
-    final static String TAG = "TetrisActivity";
+    private final static String TAG = "TetrisActivity";
 
-    private DancerView mDancerView;
-
-    private View mLeftView;
-    private View mRightView;
-    private View mDownView;
-
-    private View mTransform;
-
-    private View mResetView;
-    private View mLevelView;
-    private View mAudioView;
-
-    private View mStartView;
-    private View mPauseView;
-    private View mResumeView;
-
-    private TextView mScoreView;
-    private ForecasterView mForecaster;
+    private ViewPiece mViewPiece;
     private int mScore;
-
     private Accelerator mAccelerator;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tetris);
+        mScore = 0;
         findViews();
         initListeners();
-        mScore = 0;
-        mAccelerator = new MoveAccelerator(mDancerView);
+        DancerView dancerView = mViewPiece.find(R.id.spriteView);
+        mAccelerator = new MoveAccelerator(dancerView);
     }
 
     private void findViews() {
-        mDancerView = findViewById(R.id.spriteView);
-        mLeftView = findViewById(R.id.left);
-        mRightView = findViewById(R.id.right);
-        mDownView = findViewById(R.id.down);
-        mTransform = findViewById(R.id.transform);
-        mResetView = findViewById(R.id.reset);
-        mLeftView = findViewById(R.id.left);
-        mLevelView = findViewById(R.id.level);
-        mAudioView = findViewById(R.id.music);
-        mPauseView = findViewById(R.id.pause);
-        mResumeView = findViewById(R.id.resume);
-        mStartView = findViewById(R.id.start);
-        mScoreView = findViewById(R.id.tv_score);
-        mForecaster = findViewById(R.id.forecaster);
+        mViewPiece = new ViewPiece(findViewById(android.R.id.content));
+        mViewPiece.setVisibility(R.id.start, View.VISIBLE);
+        mViewPiece.setVisibility(R.id.pause, View.GONE);
+        mViewPiece.setVisibility(R.id.resume, View.GONE);
 
-        mStartView.setVisibility(View.VISIBLE);
-        mPauseView.setVisibility(View.GONE);
-        mResumeView.setVisibility(View.GONE);
+        initAudioView();
+    }
+
+    private void initAudioView() {
+        int resId;
+        if (Settings.isSoundOn()) {
+            resId = R.drawable.btn_blue;
+            mViewPiece.setVisibility(R.id.iv_audio, View.VISIBLE);
+        } else {
+            resId = R.drawable.btn_yellow;
+            mViewPiece.setVisibility(R.id.iv_audio, View.INVISIBLE);
+        }
+        Drawable d = getResources().getDrawable(resId);
+        d.setBounds(0, 0, d.getMinimumWidth(), d.getMinimumHeight());
+        TextView audioView = mViewPiece.find(R.id.music);
+        if (audioView != null) {
+            audioView.setCompoundDrawables(null, d, null, null);
+        }
     }
 
     private void initListeners() {
-        mLeftView.setOnTouchListener(new View.OnTouchListener() {
+        mViewPiece.setOnClickListener(R.id.music, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Settings.setSoundOn(!Settings.isSoundOn());
+                initAudioView();
+            }
+        });
+
+        final DancerView dancerView = mViewPiece.find(R.id.spriteView);
+        if (dancerView == null) {
+            return;
+        }
+
+        mViewPiece.setOnTouchListener(R.id.left, new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        if (mDancerView.getStatus() == DancerView.STATUS_RUNNING) {
+                        if (dancerView.getStatus() == DancerView.STATUS_RUNNING) {
                             mAccelerator.setDirection(Accelerator.LEFT);
                             mAccelerator.startAccelerate();
                         }
@@ -93,12 +96,12 @@ public class TetrisActivity extends Activity {
             }
         });
 
-        mRightView.setOnTouchListener(new View.OnTouchListener() {
+        mViewPiece.setOnTouchListener(R.id.right, new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        if (mDancerView.getStatus() == DancerView.STATUS_RUNNING) {
+                        if (dancerView.getStatus() == DancerView.STATUS_RUNNING) {
                             mAccelerator.setDirection(Accelerator.RIGHT);
                             mAccelerator.startAccelerate();
                         }
@@ -116,12 +119,12 @@ public class TetrisActivity extends Activity {
             }
         });
 
-        mDownView.setOnTouchListener(new View.OnTouchListener() {
+        mViewPiece.setOnTouchListener(R.id.down, new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        if (mDancerView.getStatus() == DancerView.STATUS_RUNNING) {
+                        if (dancerView.getStatus() == DancerView.STATUS_RUNNING) {
                             mAccelerator.setDirection(Accelerator.DOWN);
                             mAccelerator.startAccelerate();
                         }
@@ -139,54 +142,64 @@ public class TetrisActivity extends Activity {
             }
         });
 
-        mTransform.setOnClickListener(new View.OnClickListener() {
+        mViewPiece.setOnClickListener(R.id.transform, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mDancerView.getStatus() == DancerView.STATUS_RUNNING) {
-                    mDancerView.onTransform();
+                if (dancerView.getStatus() == DancerView.STATUS_RUNNING) {
+                    dancerView.onTransform();
                 }
             }
         });
-        mResetView.setOnClickListener(new View.OnClickListener() {
+
+        mViewPiece.setOnClickListener(R.id.reset, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDancerView.onReset();
+                if (dancerView.getStatus() != DancerView.STATUS_RUNNING) {
+                    dancerView.onReset();
+                }
             }
         });
-        mPauseView.setOnClickListener(new View.OnClickListener() {
+
+        mViewPiece.setOnClickListener(R.id.pause, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDancerView.onPause();
-                mPauseView.setVisibility(View.GONE);
-                mResumeView.setVisibility(View.VISIBLE);
+                dancerView.onPause();
+                mViewPiece.setVisibility(R.id.pause, View.GONE);
+                mViewPiece.setVisibility(R.id.resume, View.VISIBLE);
             }
         });
-        mStartView.setOnClickListener(new View.OnClickListener() {
+
+        mViewPiece.setOnClickListener(R.id.start, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDancerView.onStart();
-                mStartView.setVisibility(View.GONE);
-                mPauseView.setVisibility(View.VISIBLE);
+                dancerView.onStart();
+                mViewPiece.setVisibility(R.id.start, View.GONE);
+                mViewPiece.setVisibility(R.id.pause, View.VISIBLE);
             }
         });
-        mResumeView.setOnClickListener(new View.OnClickListener() {
+
+        mViewPiece.setOnClickListener(R.id.resume, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDancerView.onResume();
-                mResumeView.setVisibility(View.GONE);
-                mPauseView.setVisibility(View.VISIBLE);
+                dancerView.onResume();
+                mViewPiece.setVisibility(R.id.resume, View.GONE);
+                mViewPiece.setVisibility(R.id.pause, View.VISIBLE);
             }
         });
-        mDancerView.setOnAchieveRowListener(new DancerView.OnAchieveRowListener() {
+
+        dancerView.setOnAchieveRowListener(new DancerView.OnAchieveRowListener() {
             @Override
             public void onAchieveRows(int rows) {
                 formatScore(rows);
             }
         });
-        mDancerView.register(new Dancer.OnNextShapeOccurredListener() {
+        dancerView.register(new Dancer.OnNextShapeOccurredListener() {
             @Override
             public void onNextShape(int idx, int color) {
-                mForecaster.setShapeIndexAndColor(idx, color);
+                ForecasterView view = mViewPiece.find(R.id.forecaster);
+                if (view != null) {
+                    view.setShapeIndexAndColor(idx, color);
+                }
             }
         });
     }
@@ -219,12 +232,15 @@ public class TetrisActivity extends Activity {
                 break;
         }
         mScore += score;
-        mScoreView.setText(String.valueOf(mScore));
+        mViewPiece.setText(R.id.tv_score, String.valueOf(mScore));
     }
 
     @Override
     public void onBackPressed() {
-        mDancerView.onQuit();
+        DancerView dancerView = mViewPiece.find(R.id.spriteView);
+        if (dancerView != null) {
+            dancerView.onQuit();
+        }
         finish();
     }
 

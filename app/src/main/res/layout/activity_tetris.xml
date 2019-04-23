@@ -30,11 +30,34 @@
                 android:layout_marginTop="40dp" />
 
             <TextView
-                android:id="@+id/tv_score"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="0" />
+                android:layout_marginTop="@dimen/menu_margin"
+                android:text="@string/level" />
+
+            <TextView
+                android:id="@+id/tv_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/menu_margin"
+                android:text="@string/score" />
+
+            <TextView
+                android:id="@+id/tv_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/iv_audio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/menu_margin"
+                android:src="@drawable/ic_audio" />
+
         </LinearLayout>
     </LinearLayout>
 
@@ -47,17 +70,12 @@
         <TextView
             android:id="@+id/reset"
             style="@style/btn_setting"
-            android:text="Reset" />
+            android:text="@string/reset" />
 
         <TextView
             android:id="@+id/music"
             style="@style/btn_setting"
-            android:text="Music" />
-
-        <TextView
-            android:id="@+id/level"
-            style="@style/btn_setting"
-            android:text="Level" />
+            android:text="@string/sound" />
 
         <FrameLayout
             android:layout_width="80dp"
@@ -66,19 +84,19 @@
             <TextView
                 android:id="@+id/start"
                 style="@style/btn_setting"
-                android:text="Start"
+                android:text="@string/start"
                 android:visibility="gone" />
 
             <TextView
                 android:id="@+id/pause"
                 style="@style/btn_setting"
-                android:text="Pause"
+                android:text="@string/pause"
                 android:visibility="gone" />
 
             <TextView
                 android:id="@+id/resume"
                 style="@style/btn_setting"
-                android:text="Resume"
+                android:text="@string/resume"
                 android:visibility="gone" />
         </FrameLayout>
     </LinearLayout>
