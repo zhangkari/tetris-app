@@ -107,7 +107,7 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
 
     @Override
     public void onPause() {
-        mTimer.cancel();
+        mTimer.cancelAll();
     }
 
     @Override
@@ -117,7 +117,7 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
 
     @Override
     public void onReset() {
-        mTimer.cancel();
+        mTimer.cancelAll();
         mScene.reset();
     }
 
@@ -281,7 +281,7 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
 
     @Override
     public void onGameOver() {
-        mTimer.cancel();
+        mTimer.cancelAll();
 
         Context context = mView.getContext();
         if (context instanceof Activity) {

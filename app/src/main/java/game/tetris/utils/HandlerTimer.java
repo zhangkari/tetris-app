@@ -69,7 +69,6 @@ public class HandlerTimer implements Timer {
             idx = addTickListener(listener, argument);
         }
         mOnTickListeners.get(idx).mCanceled = false;
-        mHandler.removeMessages(MSG_TICK);
         startLoopInner(idx, delay, interval, argument);
 
         return idx;

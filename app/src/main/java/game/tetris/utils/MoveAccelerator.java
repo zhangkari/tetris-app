@@ -8,14 +8,18 @@ public class MoveAccelerator implements Accelerator, Timer.OnTickListener {
     private Timer timer;
     private int direction;
 
+    private int taskId;
+
     public MoveAccelerator(Dancer dancer) {
         this.dancer = dancer;
         timer = new HandlerTimer();
+        taskId = timer.schedule(200, this);
+        timer.cancel(taskId);
     }
 
     @Override
     public void startAccelerate() {
-        timer.schedule(100, this);
+        timer.resume(taskId);
     }
 
     @Override
@@ -25,7 +29,7 @@ public class MoveAccelerator implements Accelerator, Timer.OnTickListener {
 
     @Override
     public void stopAccelerate() {
-        timer.cancel();
+        timer.cancel(taskId);
     }
 
     @Override
