@@ -10,12 +10,12 @@ public class MoveAccelerator implements Accelerator, Timer.OnTickListener {
 
     public MoveAccelerator(Dancer dancer) {
         this.dancer = dancer;
-        timer = new UniversalTimer();
+        timer = new HandlerTimer();
     }
 
     @Override
     public void startAccelerate() {
-        timer.startLoop(0, 100, this);
+        timer.schedule(100, this);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class MoveAccelerator implements Accelerator, Timer.OnTickListener {
     }
 
     @Override
-    public void onTick(int interval) {
+    public void onTick(Object argument) {
         Logs.d(TAG, "onTick");
         switch (direction) {
             case DOWN:

@@ -23,7 +23,7 @@ import game.tetris.sprite.SceneLayer;
 import game.tetris.sprite.Sprite;
 import game.tetris.utils.Logs;
 import game.tetris.utils.Timer;
-import game.tetris.utils.UniversalTimer;
+import game.tetris.utils.HandlerTimer;
 
 class DancerProxy implements Dancer, Timer.OnTickListener {
     private static final String TAG = "DancerProxy";
@@ -69,7 +69,7 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
         view.addDrawable(mSprite);
 
         mChecker = new SpriteChecker();
-        mTimer = new UniversalTimer();
+        mTimer = new HandlerTimer();
         mInterval = 800;
         mView.setRefreshHZ(5);
         mSpriteData = new SpriteData();
@@ -102,7 +102,7 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
     public void onStart() {
         mScene.reset();
         resetSprite();
-        mTimer.startLoop(0, mInterval, this);
+        mTimer.schedule(mInterval, this);
     }
 
     @Override
@@ -112,7 +112,7 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
 
     @Override
     public void onResume() {
-        mTimer.startLoop(0, mInterval, this);
+        mTimer.schedule(mInterval, this);
     }
 
     @Override
@@ -291,7 +291,7 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
     }
 
     @Override
-    public void onTick(int interval) {
+    public void onTick(Object argument) {
         onMoveDown();
     }
 }
