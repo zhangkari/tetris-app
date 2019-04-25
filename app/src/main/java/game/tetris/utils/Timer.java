@@ -26,9 +26,21 @@ public interface Timer {
     void cancel(int id);
 
     /**
-     * Cancel the all task
+     * Cancel all task
      */
-    void cancel();
+    void cancelAll();
+
+    /**
+     * Resume the specified task
+     *
+     * @param id the task id that canceled by cancel(int id)
+     */
+    void resume(int id);
+
+    /**
+     * Resume all the task that canceled
+     */
+    void resumeAll();
 
     void destroy();
 

@@ -132,11 +132,53 @@ public class HandlerTimer implements Timer {
     }
 
     @Override
-    public void cancel() {
+    public void cancelAll() {
         if (mNewThread) {
-            cancelSafe();
+            cancelAllSafe();
         } else {
-            cancelFast();
+            cancelAllFast();
+        }
+    }
+
+    @Override
+    public void resume(int id) {
+        if (mNewThread) {
+            resumeSafe(id);
+        } else {
+            resumeFast(id);
+        }
+    }
+
+    private void resumeFast(int id) {
+        if (id >= 0 && id < mOnTickListeners.size()) {
+            mOnTickListeners.get(id).mCanceled = false;
+        }
+    }
+
+    private void resumeSafe(int id) {
+        synchronized (this) {
+            resumeFast(id);
+        }
+    }
+
+    @Override
+    public void resumeAll() {
+        if (mNewThread) {
+            resumeAllSafe();
+        } else {
+            resumeAllFast();
+        }
+    }
+
+    private void resumeAllFast() {
+        for (TickListenerWrapper wrapper : mOnTickListeners) {
+            wrapper.mCanceled = false;
+        }
+    }
+
+    private void resumeAllSafe() {
+        synchronized (this) {
+            resumeAllFast();
         }
     }
 
@@ -152,15 +194,15 @@ public class HandlerTimer implements Timer {
         }
     }
 
-    private void cancelFast() {
+    private void cancelAllFast() {
         for (TickListenerWrapper wrapper : mOnTickListeners) {
             wrapper.mCanceled = true;
         }
     }
 
-    private void cancelSafe() {
+    private void cancelAllSafe() {
         synchronized (this) {
-            cancelFast();
+            cancelAllFast();
         }
     }
 
