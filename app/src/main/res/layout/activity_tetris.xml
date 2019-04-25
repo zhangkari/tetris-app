@@ -11,10 +11,10 @@
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
-        <game.tetris.view.DancerView
+        <game.tetris.game.DancerView
             android:id="@+id/spriteView"
-            android:layout_width="240dp"
-            android:layout_height="360dp" />
+            android:layout_width="@dimen/dancer_width"
+            android:layout_height="@dimen/dancer_height" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -23,33 +23,68 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <game.tetris.view.ForecasterView
+            <game.tetris.widget.ForecasterView
                 android:id="@+id/forecaster"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginTop="40dp" />
+                android:layout_width="@dimen/forecaster_size"
+                android:layout_height="@dimen/forecaster_size"
+                android:layout_marginTop="@dimen/menu_margin" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/menu_margin"
-                android:text="@string/level" />
+                android:text="@string/level"
+                android:textColor="@color/c_label" />
 
             <TextView
                 android:id="@+id/tv_level"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/c_value" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/menu_margin"
-                android:text="@string/score" />
+                android:text="@string/score"
+                android:textColor="@color/c_label" />
 
             <TextView
                 android:id="@+id/tv_score"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textColor="@color/c_value" />
+
+            <ImageView
+                android:id="@+id/iv_reward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_reward" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/menu_margin"
+                android:text="@string/ranking"
+                android:textColor="@color/c_label" />
+
+            <TextView
+                android:id="@+id/tv_ranking_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/c_value" />
+
+            <TextView
+                android:id="@+id/tv_ranking_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/c_value" />
+
+            <TextView
+                android:id="@+id/tv_ranking_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/c_value" />
 
             <ImageView
                 android:id="@+id/iv_audio"

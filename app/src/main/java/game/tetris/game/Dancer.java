@@ -1,4 +1,4 @@
-package game.tetris.view;
+package game.tetris.game;
 
 import game.engine.RenderView;
 

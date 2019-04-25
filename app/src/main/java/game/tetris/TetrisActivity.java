@@ -2,6 +2,7 @@ package game.tetris;
 
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -9,12 +10,13 @@ import android.widget.TextView;
 
 import com.minmin.kari.tetris.R;
 
+import game.tetris.data.Settings;
 import game.tetris.utils.Accelerator;
 import game.tetris.utils.MoveAccelerator;
 import game.tetris.utils.ViewPiece;
-import game.tetris.view.Dancer;
-import game.tetris.view.DancerView;
-import game.tetris.view.ForecasterView;
+import game.tetris.game.Dancer;
+import game.tetris.game.DancerView;
+import game.tetris.widget.ForecasterView;
 
 public class TetrisActivity extends Activity {
     private final static String TAG = "TetrisActivity";
@@ -31,6 +33,8 @@ public class TetrisActivity extends Activity {
         initListeners();
         DancerView dancerView = mViewPiece.find(R.id.spriteView);
         mAccelerator = new MoveAccelerator(dancerView);
+
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
     }
 
     private void findViews() {

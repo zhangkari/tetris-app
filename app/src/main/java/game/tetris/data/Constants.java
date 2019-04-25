@@ -1,4 +1,4 @@
-package game.tetris;
+package game.tetris.data;
 
 import android.graphics.Color;
 

@@ -1,4 +1,4 @@
-package game.tetris;
+package game.tetris.data;
 
 import game.tetris.utils.Prefs;
 

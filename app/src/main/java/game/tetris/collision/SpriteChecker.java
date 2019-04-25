@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.engine.drawable.KShapeData;
-import game.tetris.Constants;
+import game.tetris.data.Constants;
 import game.tetris.sprite.RectShape;
 import game.tetris.sprite.Sprite;
 

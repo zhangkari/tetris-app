@@ -1,7 +1,9 @@
-package game.tetris.view;
+package game.tetris.game;
 
+import android.app.Activity;
+import android.app.FragmentManager;
+import android.content.Context;
 import android.graphics.Paint;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,11 +11,12 @@ import java.util.List;
 
 import game.engine.RenderView;
 import game.engine.drawable.KShapeData;
-import game.tetris.Constants;
 import game.tetris.collision.Checker;
 import game.tetris.collision.SpriteChecker;
+import game.tetris.data.Constants;
 import game.tetris.data.SceneData;
 import game.tetris.data.SpriteData;
+import game.tetris.dialog.BottomDialog;
 import game.tetris.sprite.GridLayer;
 import game.tetris.sprite.RectShape;
 import game.tetris.sprite.SceneLayer;
@@ -39,10 +42,12 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
     private SpriteData mSpriteData;
     private int mNextShapeIdx;
     private int mNextColor;
+    private Audio mAudio;
 
     public DancerProxy() {
         mScoreListeners = new ArrayList<>();
         mNextShapeListeners = new ArrayList<>();
+        mAudio = new AudioEffect();
     }
 
     @Override
@@ -120,6 +125,7 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
     public void onQuit() {
         mTimer.destroy();
         mView.exit();
+        mAudio.destroy();
     }
 
     @Override
@@ -155,6 +161,9 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
         if (mChecker.canMoveLeft(mSprite, mScene)) {
             mSprite.moveLeft();
             mView.invalidate();
+            mAudio.playMove();
+        } else {
+            mAudio.playBlocked();
         }
     }
 
@@ -163,6 +172,9 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
         if (mChecker.canMoveRight(mSprite, mScene)) {
             mSprite.moveRight();
             mView.invalidate();
+            mAudio.playMove();
+        } else {
+            mAudio.playBlocked();
         }
     }
 
@@ -172,6 +184,19 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
             if (listener != null) {
                 listener.onAchieve(rows);
             }
+        }
+        playScoreAudio(rows);
+    }
+
+    private void playScoreAudio(int rows) {
+        if (rows >= 4) {
+            mAudio.playScore4();
+        } else if (rows >= 3) {
+            mAudio.playScore3();
+        } else if (rows >= 2) {
+            mAudio.playScore2();
+        } else if (rows >= 1) {
+            mAudio.playScore1();
         }
     }
 
@@ -184,8 +209,11 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
         }
         if (mChecker.isGameOver(mSprite, mScene)) {
             onGameOver();
+            mAudio.playGameOver();
             return;
         }
+
+        mAudio.playPlaced();
 
         fillSceneWithSprite(mSprite);
         List<Integer> score = mChecker.checkScore(mSprite, mScene);
@@ -239,16 +267,27 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
 
     @Override
     public void onTransform() {
-        if (mView.hasDrawable(mSprite) && mChecker.canTransform(mSprite, mScene)) {
+        if (!mView.hasDrawable(mSprite)) {
+            return;
+        }
+        if (mChecker.canTransform(mSprite, mScene)) {
             mSprite.next();
             mView.invalidate();
+            mAudio.playTransform();
+        } else {
+            mAudio.playBlocked();
         }
     }
 
     @Override
     public void onGameOver() {
         mTimer.cancel();
-        Toast.makeText(mView.getContext(), "Game Over", Toast.LENGTH_SHORT).show();
+
+        Context context = mView.getContext();
+        if (context instanceof Activity) {
+            FragmentManager manager = ((Activity) context).getFragmentManager();
+            new BottomDialog().show(manager, TAG);
+        }
     }
 
     @Override

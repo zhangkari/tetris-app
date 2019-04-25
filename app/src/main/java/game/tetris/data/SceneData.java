@@ -1,7 +1,6 @@
 package game.tetris.data;
 
 import game.engine.drawable.KShapeData;
-import game.tetris.Constants;
 
 public class SceneData {
     // initial scene

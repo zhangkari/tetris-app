@@ -4,4 +4,7 @@
     <color name="yellow_s">#aabb77</color>
     <color name="blue_w">#7788aa</color>
     <color name="blue_s">#6677bb</color>
+
+    <color name="c_label">#999999</color>
+    <color name="c_value">#555555</color>
 </resources>

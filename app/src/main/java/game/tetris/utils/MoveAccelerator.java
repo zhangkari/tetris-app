@@ -1,6 +1,6 @@
 package game.tetris.utils;
 
-import game.tetris.view.Dancer;
+import game.tetris.game.Dancer;
 
 public class MoveAccelerator implements Accelerator, Timer.OnTickListener {
     private static final String TAG = "MoveAccelerator";

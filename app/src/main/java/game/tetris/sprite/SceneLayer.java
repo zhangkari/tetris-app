@@ -5,7 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 
 import game.engine.drawable.KDrawable;
-import game.tetris.Constants;
+import game.tetris.data.Constants;
 
 public class SceneLayer extends RectShape {
     public SceneLayer(int width, int height) {

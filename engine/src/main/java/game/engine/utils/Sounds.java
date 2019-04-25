@@ -20,21 +20,38 @@ public class Sounds {
     }
 
     /**
+     * load resources
+     *
+     * @param resIds
+     */
+    public void load(Context context, int... resIds) {
+        for (int resId : resIds) {
+            int id = soundPool.load(context, resId, 0);
+            soundIds.put(resId, id);
+        }
+    }
+
+    /**
      * @param context the application context
      * @param resId   the resource ID
      * @param loop    loop mode (0 = no loop, -1 = loop forever, 2 = loop twice)
      * @return non-zero streamID if successful, zero if failed
      */
     public int play(Context context, int resId, int loop/**/) {
-        int id = soundIds.get(resId, 0);
+        int id = findIdByResId(context, resId);
         if (id == 0) {
-            id = soundPool.load(context, resId, 0);
-            if (id == 0) {
-                return 0;
-            }
-            soundIds.put(resId, id);
+            return 0;
         }
         return soundPool.play(id, 1, 1, 0, loop, 1);
+    }
+
+    private int findIdByResId(Context context, int resId) {
+        int id = soundIds.get(resId, -1);
+        if (id == -1) {
+            load(context, resId);
+            id = soundIds.get(resId, 0);
+        }
+        return id;
     }
 
     public void destroy() {

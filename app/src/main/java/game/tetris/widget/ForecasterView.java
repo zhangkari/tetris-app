@@ -1,4 +1,4 @@
-package game.tetris.view;
+package game.tetris.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import game.engine.drawable.KShapeData;
-import game.tetris.Constants;
+import game.tetris.data.Constants;
 import game.tetris.data.SpriteData;
 
 public class ForecasterView extends View {

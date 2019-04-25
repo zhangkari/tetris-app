@@ -1,4 +1,4 @@
-package game.tetris.view;
+package game.tetris.game;
 
 import android.content.Context;
 import android.util.AttributeSet;

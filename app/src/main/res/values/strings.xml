@@ -3,6 +3,7 @@
     <string name="about">About</string>
     <string name="app_name">Tetris</string>
 
+    <string name="close">Close</string>
     <string name="continue_game">Continue</string>
 
     <string name="exit">Exit</string>
@@ -23,7 +24,7 @@
 
     <string name="pause">Pause</string>
 
-    <string name="rank">Rank</string>
+    <string name="ranking">Ranking</string>
     <string name="reset">Reset</string>
     <string name="resume">Resume</string>
 
