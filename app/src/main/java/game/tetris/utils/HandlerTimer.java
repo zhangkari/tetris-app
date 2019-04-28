@@ -12,8 +12,8 @@ import java.util.List;
 public class HandlerTimer implements Timer {
     private static final String TAG = "HandlerTimer";
 
-    private static final int MSG_TICK = 100;
-    private static final int MSG_QUIT = 800;
+    private static final int MSG_QUIT = 100;
+    private static final int MSG_TICK = 200;
 
     private Handler mHandler;
     private boolean mNewThread;
@@ -66,7 +66,7 @@ public class HandlerTimer implements Timer {
 
         int idx = retrieveTickListenerWrapper(listener, argument);
         if (idx < 0) {
-            idx = addTickListener(listener, argument);
+            idx = addTickListener(listener, interval, argument);
         }
         mOnTickListeners.get(idx).mCanceled = false;
         startLoopInner(idx, delay, interval, argument);
@@ -102,22 +102,22 @@ public class HandlerTimer implements Timer {
         }
     }
 
-    private int addTickListener(OnTickListener listener, Object arg) {
+    private int addTickListener(OnTickListener listener, int interval, Object arg) {
         if (mNewThread) {
-            return addTickListenerLock(listener, arg);
+            return addTickListenerLock(listener, interval, arg);
         } else {
-            return addTickListenerFast(listener, arg);
+            return addTickListenerFast(listener, interval, arg);
         }
     }
 
-    private int addTickListenerFast(OnTickListener listener, Object arg) {
-        mOnTickListeners.add(new TickListenerWrapper(listener, arg));
+    private int addTickListenerFast(OnTickListener listener, int interval, Object arg) {
+        mOnTickListeners.add(new TickListenerWrapper(listener, interval, arg));
         return mOnTickListeners.size() - 1;
     }
 
-    private int addTickListenerLock(OnTickListener listener, Object arg) {
+    private int addTickListenerLock(OnTickListener listener, int interval, Object arg) {
         synchronized (this) {
-            return addTickListenerFast(listener, arg);
+            return addTickListenerFast(listener, interval, arg);
         }
     }
 
@@ -150,7 +150,11 @@ public class HandlerTimer implements Timer {
 
     private void resumeFast(int id) {
         if (id >= 0 && id < mOnTickListeners.size()) {
-            mOnTickListeners.get(id).mCanceled = false;
+            TickListenerWrapper wrapper = mOnTickListeners.get(id);
+            Message msg = mHandler.obtainMessage(id + MSG_TICK, id, wrapper.mInterval, wrapper.mArgument);
+            mHandler.removeMessages(id + MSG_TICK);
+            mHandler.sendMessage(msg);
+            wrapper.mCanceled = false;
         }
     }
 
@@ -215,7 +219,7 @@ public class HandlerTimer implements Timer {
      */
     private void startLoopInner(int idx, int delay, int interval, Object argument) {
         Message msg = Message.obtain();
-        msg.what = MSG_TICK;
+        msg.what = idx + MSG_TICK;
         msg.arg1 = idx;
         msg.arg2 = interval;
         msg.obj = argument;
@@ -281,16 +285,13 @@ public class HandlerTimer implements Timer {
             if (timer == null) {
                 return;
             }
-            switch (message.what) {
-                case MSG_TICK:
-                    timer.onTimerTick(message.arg1, message.arg2);
-                    break;
 
-                case MSG_QUIT:
-                    if (getLooper() != Looper.getMainLooper()) {
-                        getLooper().quit();
-                    }
-                    break;
+            if (message.what == MSG_QUIT) {
+                if (getLooper() != Looper.getMainLooper()) {
+                    getLooper().quit();
+                }
+            } else if (message.what >= MSG_TICK) {
+                timer.onTimerTick(message.arg1 /* id */, message.arg2 /* interval */);
             }
         }
     }
@@ -299,10 +300,12 @@ public class HandlerTimer implements Timer {
         boolean mCanceled;
         OnTickListener mListener;
         Object mArgument;
+        int mInterval;
 
-        public TickListenerWrapper(OnTickListener listener, Object argument) {
+        public TickListenerWrapper(OnTickListener listener, int interval, Object argument) {
             mCanceled = false;
             mListener = listener;
+            mInterval = interval;
             mArgument = argument;
         }
 

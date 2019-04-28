@@ -13,7 +13,7 @@ public class MoveAccelerator implements Accelerator, Timer.OnTickListener {
     public MoveAccelerator(Dancer dancer) {
         this.dancer = dancer;
         timer = new HandlerTimer();
-        taskId = timer.schedule(200, this);
+        taskId = timer.schedule(100, this);
         timer.cancel(taskId);
     }
 
