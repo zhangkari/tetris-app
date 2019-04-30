@@ -1,8 +1,5 @@
 package game.tetris.game;
 
-import android.app.Activity;
-import android.app.FragmentManager;
-import android.content.Context;
 import android.graphics.Paint;
 
 import java.util.ArrayList;
@@ -14,16 +11,16 @@ import game.engine.drawable.KShapeData;
 import game.tetris.collision.Checker;
 import game.tetris.collision.SpriteChecker;
 import game.tetris.data.Constants;
+import game.tetris.data.GameScore;
 import game.tetris.data.SceneData;
 import game.tetris.data.SpriteData;
-import game.tetris.dialog.BottomDialog;
 import game.tetris.sprite.GridLayer;
 import game.tetris.sprite.RectShape;
 import game.tetris.sprite.SceneLayer;
 import game.tetris.sprite.Sprite;
+import game.tetris.utils.HandlerTimer;
 import game.tetris.utils.Logs;
 import game.tetris.utils.Timer;
-import game.tetris.utils.HandlerTimer;
 
 class DancerProxy implements Dancer, Timer.OnTickListener {
     private static final String TAG = "DancerProxy";
@@ -35,19 +32,27 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
     private Timer mTimer;
     private int mInterval;
 
-    private List<OnWonderfulListener> mScoreListeners;
     private List<OnNextShapeOccurredListener> mNextShapeListeners;
+    private List<OnGameOverListener> mGameOverListeners;
+    private List<OnScoreChangeListener> mScoreChangeListener;
 
     private static final int[] COLORS = Constants.COLORS;
     private SpriteData mSpriteData;
     private int mNextShapeIdx;
     private int mNextColor;
+    private int mScore;
+    private int mLevel;
+
     private Audio mAudio;
 
     public DancerProxy() {
-        mScoreListeners = new ArrayList<>();
         mNextShapeListeners = new ArrayList<>();
+        mGameOverListeners = new ArrayList<>();
+        mScoreChangeListener = new ArrayList<>();
         mAudio = new AudioEffect();
+
+        mScore = GameScore.getCurrentScore();
+        mLevel = GameScore.getCurrentLevel();
     }
 
     @Override
@@ -70,10 +75,12 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
 
         mChecker = new SpriteChecker();
         mTimer = new HandlerTimer();
-        mInterval = 800;
+        mInterval = calculateInterval(GameScore.getCurrentLevel());
         mView.setRefreshHZ(5);
         mSpriteData = new SpriteData();
+
         generateNextShape();
+        notifyScoreChanged();
     }
 
     private void resetSprite() {
@@ -98,6 +105,14 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
         }
     }
 
+    private void notifyScoreChanged() {
+        int level = GameScore.getCurrentLevel();
+        int score = GameScore.getCurrentScore();
+        for (OnScoreChangeListener listener : mScoreChangeListener) {
+            listener.onScoreChange(level, score);
+        }
+    }
+
     @Override
     public void onStart() {
         mScene.reset();
@@ -112,13 +127,15 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
 
     @Override
     public void onResume() {
-        mTimer.schedule(mInterval, this);
+        mTimer.resumeAll();
     }
 
     @Override
     public void onReset() {
         mTimer.cancelAll();
         mScene.reset();
+        GameScore.reset();
+        notifyScoreChanged();
     }
 
     @Override
@@ -126,20 +143,6 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
         mTimer.destroy();
         mView.exit();
         mAudio.destroy();
-    }
-
-    @Override
-    public void register(OnWonderfulListener listener) {
-        if (listener != null && !mScoreListeners.contains(listener)) {
-            mScoreListeners.add(listener);
-        }
-    }
-
-    @Override
-    public void unregister(OnWonderfulListener listener) {
-        if (listener != null) {
-            mScoreListeners.remove(listener);
-        }
     }
 
     @Override
@@ -153,6 +156,34 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
     public void unregister(OnNextShapeOccurredListener listener) {
         if (listener != null) {
             mNextShapeListeners.remove(listener);
+        }
+    }
+
+    @Override
+    public void register(OnGameOverListener listener) {
+        if (listener != null) {
+            mGameOverListeners.add(listener);
+        }
+    }
+
+    @Override
+    public void unregister(OnGameOverListener listener) {
+        if (listener != null) {
+            mGameOverListeners.remove(listener);
+        }
+    }
+
+    @Override
+    public void register(OnScoreChangeListener listener) {
+        if (listener != null) {
+            mScoreChangeListener.add(listener);
+        }
+    }
+
+    @Override
+    public void unregister(OnScoreChangeListener listener) {
+        if (listener != null) {
+            mScoreChangeListener.remove(listener);
         }
     }
 
@@ -178,24 +209,54 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
         }
     }
 
+    private int formatScore(int row) {
+        /*
+        int score = 0;
+        switch (row) {
+            case 1:
+                score = 100;
+                break;
+
+            case 2:
+                score = 300;
+                break;
+
+            case 3:
+                score = 500;
+                break;
+
+            case 4:
+                score = 700;
+                break;
+        }
+        return score;
+        */
+        return (row * 2 - 1) * 100;
+    }
+
     private void onAchieveRows(int rows) {
         Logs.d(TAG, "onAchieveRows:" + rows);
-        for (OnWonderfulListener listener : mScoreListeners) {
-            if (listener != null) {
-                listener.onAchieve(rows);
-            }
-        }
+        int score = formatScore(rows);
+        mScore += score;
+        mLevel = mScore / 4000 + 1;
+
+        GameScore.saveCurrentLevel(mLevel);
+        GameScore.saveCurrentScore(mScore);
+        mInterval = calculateInterval(mLevel);
+        notifyScoreChanged();
         playScoreAudio(rows);
+    }
+
+    private int calculateInterval(int level) {
+        return 800 - (level - 1) * 50;
     }
 
     private void playScoreAudio(int rows) {
         if (rows >= 4) {
             mAudio.playScore4();
         } else if (rows >= 3) {
-            mAudio.playScore3();
-        } else if (rows >= 2) {
             mAudio.playScore2();
-        } else if (rows >= 1) {
+        } else if (rows >= 2) {
             mAudio.playScore1();
         }
     }
@@ -279,14 +340,10 @@ class DancerProxy implements Dancer, Timer.OnTickListener {
         }
     }
 
-    @Override
-    public void onGameOver() {
+    private void onGameOver() {
         mTimer.cancelAll();
-
-        Context context = mView.getContext();
-        if (context instanceof Activity) {
-            FragmentManager manager = ((Activity) context).getFragmentManager();
-            new BottomDialog().show(manager, TAG);
+        for (OnGameOverListener listener : mGameOverListeners) {
+            listener.onGameOver();
         }
     }
 

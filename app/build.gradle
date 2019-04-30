@@ -27,5 +27,6 @@ android {
 
 dependencies {
     implementation project(path: ':engine')
+    implementation 'com.google.android.gms:play-services-ads:17.2.0'
     testImplementation 'junit:junit:4.12'
 }

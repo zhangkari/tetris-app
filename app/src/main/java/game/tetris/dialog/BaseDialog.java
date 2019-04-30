@@ -3,6 +3,7 @@ package game.tetris.dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ public class BaseDialog extends DialogFragment {
     private static final String TAG = "BaseDialog";
 
     protected View mView;
+    private Runnable mDismissListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle bundle) {
@@ -25,6 +27,10 @@ public class BaseDialog extends DialogFragment {
         super.onViewCreated(view, bundle);
         mView = view;
         init();
+    }
+
+    public void setOnDismissListener(Runnable listener) {
+        mDismissListener = listener;
     }
 
     protected void init() {
@@ -66,5 +72,13 @@ public class BaseDialog extends DialogFragment {
     @Override
     public void dismiss() {
         super.dismissAllowingStateLoss();
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dlgInterface) {
+        super.onDismiss(dlgInterface);
+        if (mDismissListener != null) {
+            mDismissListener.run();
+        }
     }
 }

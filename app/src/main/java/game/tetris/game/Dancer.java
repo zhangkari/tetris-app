@@ -21,23 +21,29 @@ public interface Dancer {
 
     void onTransform();
 
-    void onGameOver();
-
     void onQuit();
-
-    void register(OnWonderfulListener listener);
-
-    void unregister(OnWonderfulListener listener);
 
     void register(OnNextShapeOccurredListener listener);
 
     void unregister(OnNextShapeOccurredListener listener);
 
-    interface OnWonderfulListener {
-        void onAchieve(int rows);
-    }
+    void register(OnGameOverListener listener);
+
+    void unregister(OnGameOverListener listener);
+
+    void register(OnScoreChangeListener listener);
+
+    void unregister(OnScoreChangeListener listener);
 
     interface OnNextShapeOccurredListener {
         void onNextShape(int idx, int color);
+    }
+
+    interface OnGameOverListener {
+        void onGameOver();
+    }
+
+    interface OnScoreChangeListener {
+        void onScoreChange(int level, int score);
     }
 }

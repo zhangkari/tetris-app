@@ -5,9 +5,8 @@ import android.util.AttributeSet;
 
 import game.engine.RenderView;
 
-public class DancerView extends RenderView implements Dancer, Dancer.OnWonderfulListener {
+public class DancerView extends RenderView implements Dancer {
     private Dancer mDancer;
-    private OnAchieveRowListener mScoreListener;
 
     public static final int STATUS_INIT = 0;
     public static final int STATUS_PAUSE = 1;
@@ -33,10 +32,6 @@ public class DancerView extends RenderView implements Dancer, Dancer.OnWonderful
         return mStatus;
     }
 
-    public void setOnAchieveRowListener(OnAchieveRowListener listener) {
-        mScoreListener = listener;
-    }
-
     @Override
     public boolean performClick() {
         return super.performClick();
@@ -45,10 +40,20 @@ public class DancerView extends RenderView implements Dancer, Dancer.OnWonderful
     private void init() {
         mStatus = STATUS_INIT;
         mDancer = new DancerProxy();
+        initListeners();
         post(new Runnable() {
             @Override
             public void run() {
                 onSizeMeasured(getWidth(), getHeight());
+            }
+        });
+    }
+
+    private void initListeners() {
+        register(new OnGameOverListener() {
+            @Override
+            public void onGameOver() {
+                mStatus = STATUS_OVER;
             }
         });
     }
@@ -69,7 +74,6 @@ public class DancerView extends RenderView implements Dancer, Dancer.OnWonderful
     public void onStart() {
         if (mDancer != null) {
             mDancer.onStart();
-            mDancer.register(this);
             mStatus = STATUS_RUNNING;
         }
     }
@@ -102,22 +106,7 @@ public class DancerView extends RenderView implements Dancer, Dancer.OnWonderful
     public void onQuit() {
         if (mDancer != null) {
             mDancer.onQuit();
-            mDancer.unregister(this);
             mStatus = STATUS_STOP;
-        }
-    }
-
-    @Override
-    public void register(OnWonderfulListener listener) {
-        if (mDancer != null) {
-            mDancer.register(listener);
-        }
-    }
-
-    @Override
-    public void unregister(OnWonderfulListener listener) {
-        if (mDancer != null) {
-            mDancer.unregister(listener);
         }
     }
 
@@ -130,6 +119,34 @@ public class DancerView extends RenderView implements Dancer, Dancer.OnWonderful
 
     @Override
     public void unregister(OnNextShapeOccurredListener listener) {
+        if (mDancer != null) {
+            mDancer.unregister(listener);
+        }
+    }
+
+    @Override
+    public void register(OnGameOverListener listener) {
+        if (mDancer != null) {
+            mDancer.register(listener);
+        }
+    }
+
+    @Override
+    public void unregister(OnGameOverListener listener) {
+        if (mDancer != null) {
+            mDancer.unregister(listener);
+        }
+    }
+
+    @Override
+    public void register(OnScoreChangeListener listener) {
+        if (mDancer != null) {
+            mDancer.register(listener);
+        }
+    }
+
+    @Override
+    public void unregister(OnScoreChangeListener listener) {
         if (mDancer != null) {
             mDancer.unregister(listener);
         }
@@ -151,7 +168,7 @@ public class DancerView extends RenderView implements Dancer, Dancer.OnWonderful
 
     @Override
     public void onMoveDown() {
-        if (mDancer != null) {
+        if (mDancer != null && mStatus == STATUS_RUNNING) {
             mDancer.onMoveDown();
         }
     }
@@ -161,24 +178,5 @@ public class DancerView extends RenderView implements Dancer, Dancer.OnWonderful
         if (mDancer != null) {
             mDancer.onTransform();
         }
-    }
-
-    @Override
-    public void onGameOver() {
-        if (mDancer != null) {
-            mDancer.onGameOver();
-            mStatus = STATUS_OVER;
-        }
-    }
-
-    @Override
-    public void onAchieve(int rows) {
-        if (mScoreListener != null) {
-            mScoreListener.onAchieveRows(rows);
-        }
-    }
-
-    public interface OnAchieveRowListener {
-        void onAchieveRows(int rows);
     }
 }

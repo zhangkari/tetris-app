@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="btn_setting">20dp</dimen>
-    <dimen name="btn_direction">50dp</dimen>
-    <dimen name="btn_transform">50dp</dimen>
+    <dimen name="btn_direction">60dp</dimen>
+    <dimen name="btn_transform">60dp</dimen>
 
-    <dimen name="dancer_width">240dp</dimen>
-    <dimen name="dancer_height">360dp</dimen>
+    <dimen name="dancer_width">200dp</dimen>
+    <dimen name="dancer_height">300dp</dimen>
     <dimen name="forecaster_size">40dp</dimen>
     <dimen name="indicator_size">8dp</dimen>
-    <dimen name="menu_margin">20dp</dimen>
+    <dimen name="menu_margin">10dp</dimen>
+
+    <dimen name="dp_5">5dp</dimen>
+    <dimen name="dp_12">12dp</dimen>
 </resources>

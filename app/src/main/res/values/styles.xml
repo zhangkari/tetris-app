@@ -13,7 +13,7 @@
         <item name="android:layout_width">@dimen/btn_direction</item>
         <item name="android:layout_height">@dimen/btn_direction</item>
         <item name="android:background">@drawable/btn_yellow</item>
-
+        <item name="android:padding">@dimen/dp_5</item>
     </style>
 
     <style name="btn_transform">
@@ -22,6 +22,7 @@
         <item name="android:background">@drawable/btn_blue</item>
         <item name="android:layout_marginLeft">50dp</item>
         <item name="android:layout_marginTop">10dp</item>
+        <item name="android:padding">@dimen/dp_5</item>
     </style>
 
     <style name="btn_direction.left">

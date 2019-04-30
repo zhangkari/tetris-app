@@ -1,6 +1,8 @@
 package game.tetris;
 
+import android.app.ActionBar;
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -8,33 +10,89 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdCallback;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.minmin.kari.tetris.R;
 
 import game.tetris.data.Settings;
-import game.tetris.utils.Accelerator;
-import game.tetris.utils.MoveAccelerator;
-import game.tetris.utils.ViewPiece;
+import game.tetris.dialog.BaseDialog;
+import game.tetris.dialog.BottomDialog;
 import game.tetris.game.Dancer;
 import game.tetris.game.DancerView;
+import game.tetris.utils.Accelerator;
+import game.tetris.utils.Logs;
+import game.tetris.utils.MoveAccelerator;
+import game.tetris.utils.ViewPiece;
 import game.tetris.widget.ForecasterView;
 
 public class TetrisActivity extends Activity {
     private final static String TAG = "TetrisActivity";
 
     private ViewPiece mViewPiece;
-    private int mScore;
     private Accelerator mAccelerator;
+    private RewardedAd mRewardAd;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tetris);
-        mScore = 0;
         findViews();
         initListeners();
         DancerView dancerView = mViewPiece.find(R.id.spriteView);
         mAccelerator = new MoveAccelerator(dancerView);
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
+
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+        mRewardAd = loadRewardAd();
+    }
+
+    private void logLoadAdError(int code) {
+        /*
+        ERROR_CODE_INTERNAL_ERROR - 内部出现问题；例如，收到广告服务器的无效响应。
+        ERROR_CODE_INVALID_REQUEST - 广告请求无效；例如，广告单元 ID 不正确。
+        ERROR_CODE_NETWORK_ERROR - 由于网络连接问题，广告请求失败。
+        ERROR_CODE_NO_FILL - 广告请求成功，但由于缺少广告资源，未返回广告。
+        */
+        switch (code) {
+            case AdRequest.ERROR_CODE_INTERNAL_ERROR:
+                Logs.d(TAG, "internal error");
+                break;
+
+            case AdRequest.ERROR_CODE_INVALID_REQUEST:
+                Logs.d(TAG, "invalid request");
+                break;
+
+            case AdRequest.ERROR_CODE_NETWORK_ERROR:
+                Logs.d(TAG, "network error");
+                break;
+
+            case AdRequest.ERROR_CODE_NO_FILL:
+                Logs.d(TAG, "no fill");
+                break;
+        }
+    }
+
+    private RewardedAd loadRewardAd() {
+        RewardedAd ad = new RewardedAd(this, getString(R.string.REWARD_AD_ID));
+        ad.loadAd(new AdRequest.Builder().build(), new RewardedAdLoadCallback() {
+            @Override
+            public void onRewardedAdLoaded() {
+                Logs.d(TAG, "load reward ad success");
+            }
+
+            @Override
+            public void onRewardedAdFailedToLoad(int code) {
+                logLoadAdError(code);
+            }
+        });
+        return ad;
     }
 
     private void findViews() {
@@ -44,6 +102,14 @@ public class TetrisActivity extends Activity {
         mViewPiece.setVisibility(R.id.resume, View.GONE);
 
         initAudioView();
+        initAdView();
+    }
+
+    private void initAdView() {
+        AdView adView = mViewPiece.find(R.id.adView);
+        if (adView != null) {
+            adView.loadAd(new AdRequest.Builder().build());
+        }
     }
 
     private void initAudioView() {
@@ -82,6 +148,7 @@ public class TetrisActivity extends Activity {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        v.setPressed(true);
                         if (dancerView.getStatus() == DancerView.STATUS_RUNNING) {
                             mAccelerator.setDirection(Accelerator.LEFT);
                             mAccelerator.startAccelerate();
@@ -89,6 +156,7 @@ public class TetrisActivity extends Activity {
                         break;
 
                     case MotionEvent.ACTION_UP:
+                        v.setPressed(false);
                         v.performClick();
                         mAccelerator.stopAccelerate();
                         break;
@@ -105,6 +173,7 @@ public class TetrisActivity extends Activity {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        v.setPressed(true);
                         if (dancerView.getStatus() == DancerView.STATUS_RUNNING) {
                             mAccelerator.setDirection(Accelerator.RIGHT);
                             mAccelerator.startAccelerate();
@@ -112,6 +181,7 @@ public class TetrisActivity extends Activity {
                         break;
 
                     case MotionEvent.ACTION_UP:
+                        v.setPressed(false);
                         v.performClick();
                         mAccelerator.stopAccelerate();
                         break;
@@ -128,6 +198,7 @@ public class TetrisActivity extends Activity {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        v.setPressed(true);
                         if (dancerView.getStatus() == DancerView.STATUS_RUNNING) {
                             mAccelerator.setDirection(Accelerator.DOWN);
                             mAccelerator.startAccelerate();
@@ -135,6 +206,7 @@ public class TetrisActivity extends Activity {
                         break;
 
                     case MotionEvent.ACTION_UP:
+                        v.setPressed(false);
                         v.performClick();
                         mAccelerator.stopAccelerate();
                         break;
@@ -176,7 +248,9 @@ public class TetrisActivity extends Activity {
         mViewPiece.setOnClickListener(R.id.start, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dancerView.onStart();
+                if (dancerView.getStatus() != DancerView.STATUS_RUNNING) {
+                    dancerView.onStart();
+                }
                 mViewPiece.setVisibility(R.id.start, View.GONE);
                 mViewPiece.setVisibility(R.id.pause, View.VISIBLE);
             }
@@ -191,12 +265,6 @@ public class TetrisActivity extends Activity {
             }
         });
 
-        dancerView.setOnAchieveRowListener(new DancerView.OnAchieveRowListener() {
-            @Override
-            public void onAchieveRows(int rows) {
-                formatScore(rows);
-            }
-        });
         dancerView.register(new Dancer.OnNextShapeOccurredListener() {
             @Override
             public void onNextShape(int idx, int color) {
@@ -206,37 +274,43 @@ public class TetrisActivity extends Activity {
                 }
             }
         });
+
+        dancerView.register(new Dancer.OnGameOverListener() {
+            @Override
+            public void onGameOver() {
+                FragmentManager manager = getFragmentManager();
+                BaseDialog dialog = new BottomDialog();
+                dialog.setOnDismissListener(new Runnable() {
+                    @Override
+                    public void run() {
+                        showRewardAd();
+                    }
+                });
+                dialog.show(manager, TAG);
+            }
+        });
+
+        dancerView.register(new Dancer.OnScoreChangeListener() {
+            @Override
+            public void onScoreChange(int level, int score) {
+                refreshScore(score);
+            }
+        });
     }
 
-    private void formatScore(int row) {
-        int score = 0;
-        switch (row) {
-            case 1:
-                score = 100;
-                break;
+    private void refreshScore(int score) {
+        mViewPiece.setText(R.id.tv_score, String.valueOf(score));
+    }
 
-            case 2:
-                score = 200;
-                break;
-
-            case 3:
-                score = 500;
-                break;
-
-            case 4:
-                score = 800;
-                break;
-
-            case 5:
-                score = 1200;
-                break;
-
-            case 6:
-                score = 1600;
-                break;
+    private void showRewardAd() {
+        if (mRewardAd.isLoaded()) {
+            mRewardAd.show(this, new RewardedAdCallback() {
+                @Override
+                public void onRewardedAdClosed() {
+                    mRewardAd = loadRewardAd();
+                }
+            });
         }
-        mScore += score;
-        mViewPiece.setText(R.id.tv_score, String.valueOf(mScore));
     }
 
     @Override

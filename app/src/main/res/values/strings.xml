@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about">About</string>
-    <string name="app_name">Tetris</string>
+    <string name="app_name">Bullet Block</string>
 
-    <string name="close">Close</string>
     <string name="continue_game">Continue</string>
 
     <string name="exit">Exit</string>
+    <string name="game_over_hint">Take a rest and challenge again</string>
 
     <string name="heart">Heart</string>
     <string name="help">Help</string>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ADMOB_APP_ID">ca-app-pub-3940256099942544~3347511713</string>
+    <string name="BANNER_AD_ID">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="REWARD_AD_ID">ca-app-pub-3940256099942544/1234567890</string>
+</resources>

@@ -7,4 +7,7 @@
 
     <color name="c_label">#999999</color>
     <color name="c_value">#555555</color>
+
+    <color name="btn_solid_green">#408a50</color>
+    <color name="btn_solid_blue">#40508a</color>
 </resources>
