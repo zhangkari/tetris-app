@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<game.tetris.widget.DragRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <game.tetris.widget.MatrixView
+        android:id="@+id/hole"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp" />
+
+
+    <game.tetris.widget.MatrixView
+        android:id="@id/center"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp" />
+
+    <game.tetris.widget.MatrixView
+        android:id="@id/left"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:layout_toStartOf="@id/center" />
+
+    <game.tetris.widget.MatrixView
+        android:id="@id/right"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:layout_toEndOf="@id/center" />
+</game.tetris.widget.DragRelativeLayout>

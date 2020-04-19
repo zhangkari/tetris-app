@@ -29,7 +29,7 @@ public class KShapeData {
         calculateRealOccupied();
     }
 
-    public void setData(int[] data) {
+    public void setData(int... data) {
         if (data == null || data.length != mRows * mCols) {
             throw new RuntimeException("data size must be rows * cols");
         }

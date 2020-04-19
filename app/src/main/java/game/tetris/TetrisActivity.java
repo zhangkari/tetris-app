@@ -6,6 +6,7 @@ import android.app.FragmentManager;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -51,6 +52,14 @@ public class TetrisActivity extends Activity {
         }
 
         mRewardAd = loadRewardAd();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void logLoadAdError(int code) {
